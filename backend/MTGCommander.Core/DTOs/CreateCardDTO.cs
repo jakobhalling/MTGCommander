@@ -30,10 +30,10 @@ public class CreateCardDTO
         }
     }
 
-    public Card ToEntity()
+    public CardDefinition ToEntity()
     {
         Validate();
-        return new Card
+        return new CardDefinition
         {
             Name = Name,
             ScryfallId = ScryfallId,

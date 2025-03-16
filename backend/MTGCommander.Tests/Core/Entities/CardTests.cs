@@ -3,58 +3,113 @@ using Xunit;
 
 namespace MTGCommander.Tests.Core.Entities;
 
-public class CardTests
+public class GameCardTests
 {
     [Fact]
-    public void Card_ShouldInitializeWithDefaultValues()
+    public void GameCard_WhenCreated_ShouldHaveBasicProperties()
     {
-        // Arrange & Act
-        var card = new Card();
+        // Arrange
+        var cardId = "test-card-123";
+        var cardName = "Lightning Bolt";
+        var types = new[] { "Instant" };
+        var ownerId = "player-1";
+
+        // Act
+        var card = new GameCard(cardId, cardName, types, ownerId);
 
         // Assert
-        Assert.Equal(0, card.Id);
-        Assert.Equal(string.Empty, card.Name);
-        Assert.Equal(string.Empty, card.ScryfallId);
-        Assert.Null(card.ImageUrl);
-        Assert.Null(card.ManaCost);
-        Assert.Null(card.Type);
-        Assert.Null(card.Text);
-        Assert.Null(card.Power);
-        Assert.Null(card.Toughness);
-        Assert.Null(card.Loyalty);
-        Assert.False(card.IsCommander);
+        Assert.Equal(cardId, card.Id);
+        Assert.Equal(cardName, card.Name);
+        Assert.Equal(types, card.Types);
+        Assert.Equal(ownerId, card.OwnerId);
+        Assert.False(card.IsTapped);
+        Assert.Empty(card.Counters);
+        Assert.Empty(card.Attachments);
     }
 
     [Fact]
-    public void Card_ShouldSetAndGetProperties()
+    public void GameCard_WhenTapped_ShouldUpdateTappedState()
     {
         // Arrange
-        var card = new Card
-        {
-            Id = 1,
-            Name = "Sol Ring",
-            ScryfallId = "test-id",
-            ImageUrl = "https://example.com/image.jpg",
-            ManaCost = "{1}",
-            Type = "Artifact",
-            Text = "{T}: Add {C}{C}.",
-            Power = null,
-            Toughness = null,
-            Loyalty = null,
-            IsCommander = false
-        };
+        var card = new GameCard("test-card", "Test Card", new[] { "Creature" }, "player-1");
+        
+        // Act
+        card.Tap();
 
         // Assert
-        Assert.Equal(1, card.Id);
-        Assert.Equal("Sol Ring", card.Name);
-        Assert.Equal("test-id", card.ScryfallId);
-        Assert.Equal("https://example.com/image.jpg", card.ImageUrl);
-        Assert.Equal("{1}", card.ManaCost);
-        Assert.Equal("Artifact", card.Type);
-        Assert.Equal("{T}: Add {C}{C}.", card.Text);
-        Assert.Null(card.Power);
-        Assert.Null(card.Toughness);
-        Assert.Null(card.Loyalty);
-        Assert.False(card.IsCommander);
+        Assert.True(card.IsTapped);
+
+        // Act
+        card.Untap();
+
+        // Assert
+        Assert.False(card.IsTapped);
+    }
+
+    [Fact]
+    public void GameCard_WhenAddingCounter_ShouldTrackCounters()
+    {
+        // Arrange
+        var card = new GameCard("test-card", "Test Card", new[] { "Creature" }, "player-1");
+        
+        // Act
+        card.AddCounter("+1/+1", 2);
+        card.AddCounter("loyalty", 1);
+
+        // Assert
+        Assert.Equal(2, card.Counters["+1/+1"]);
+        Assert.Equal(1, card.Counters["loyalty"]);
+
+        // Act
+        card.RemoveCounter("+1/+1", 1);
+
+        // Assert
+        Assert.Equal(1, card.Counters["+1/+1"]);
+    }
+
+    [Fact]
+    public void GameCard_WhenAttaching_ShouldTrackAttachments()
+    {
+        // Arrange
+        var card = new GameCard("test-card", "Test Card", new[] { "Creature" }, "player-1");
+        var auraId = "aura-123";
+        var equipmentId = "equipment-123";
+
+        // Act
+        card.AttachCard(auraId);
+        card.AttachCard(equipmentId);
+
+        // Assert
+        Assert.Contains(auraId, card.Attachments);
+        Assert.Contains(equipmentId, card.Attachments);
+        Assert.Equal(2, card.Attachments.Count);
+
+        // Act
+        card.DetachCard(auraId);
+
+        // Assert
+        Assert.DoesNotContain(auraId, card.Attachments);
+        Assert.Single(card.Attachments);
+    }
+
+    [Fact]
+    public void GameCard_WhenMovingZones_ShouldUpdateZone()
+    {
+        // Arrange
+        var card = new GameCard("test-card", "Test Card", new[] { "Creature" }, "player-1");
+        var handZoneId = "hand-1";
+        var battlefieldZoneId = "battlefield-1";
+
+        // Act
+        card.MoveToZone(handZoneId);
+
+        // Assert
+        Assert.Equal(handZoneId, card.CurrentZoneId);
+
+        // Act
+        card.MoveToZone(battlefieldZoneId);
+
+        // Assert
+        Assert.Equal(battlefieldZoneId, card.CurrentZoneId);
     }
 } 

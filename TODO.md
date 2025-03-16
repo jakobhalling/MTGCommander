@@ -17,10 +17,10 @@
   - [x] Define state validation rules
 
 ### Card System
-- [ ] Implement card data structure
-  - [ ] Define card model (properties, methods, interfaces)
-  - [ ] Create card type system
-  - [ ] Implement card ability representation
+- [x] Implement card data structure ✅
+  - [x] Define card model (properties, methods, interfaces)
+  - [x] Create card type system
+  - [x] Implement card ability representation
 - [ ] Setup Scryfall integration
   - [ ] Direct API client implementation
   - [ ] Card data mapping

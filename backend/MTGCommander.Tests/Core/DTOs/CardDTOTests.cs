@@ -11,7 +11,7 @@ public class CardDTOTests
     public void CardDTO_ShouldMapFromEntity()
     {
         // Arrange
-        var card = new Card
+        var card = new CardDefinition
         {
             Id = 1,
             Name = "Sol Ring",

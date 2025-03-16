@@ -16,7 +16,7 @@ public class CardDTO
     public string? Loyalty { get; set; }
     public bool IsCommander { get; set; }
 
-    public static CardDTO FromEntity(Card entity)
+    public static CardDTO FromEntity(CardDefinition entity)
     {
         return new CardDTO
         {
