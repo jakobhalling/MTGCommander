@@ -2,4 +2,6 @@ read the "TODO.md" file in the root folder and proceed with the next unfinished 
 When writing code, start by writing tests and then afterwards write the code that makes those tests succeed.
 Continue that until all tests are succesful.
 
+Read GAI_DEVELOPMENT_PRINCIPLES.md in root directory and follow guidelines.
+
 Whenever finishing a step in the todo list, and no tests and builds are failing, git commit changes with a good message and git push.
