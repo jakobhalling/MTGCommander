@@ -4,8 +4,8 @@ A digital implementation of the Magic: The Gathering Commander format, built wit
 
 ## Documentation
 
-- [Project Roadmap & TODO](./TODO.md)
-- [Contributing Guidelines](./CONTRIBUTING.md)
+- [Project Roadmap & TODO](./docs/TODO.md)
+- [Contributing Guidelines](./docs/CONTRIBUTING.md)
 - [Architecture Overview](./docs/ARCHITECTURE.md)
 - [API Documentation](./docs/API.md)
 
