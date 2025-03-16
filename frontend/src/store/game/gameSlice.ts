@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { GameState } from '../../types/game/GameState';
+
 import {
   GAME_ACTIONS,
   SetPhasePayload,

@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore , createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { GameState } from '../types/game/GameState';
 
 const initialState: { currentGame: GameState | null } = {

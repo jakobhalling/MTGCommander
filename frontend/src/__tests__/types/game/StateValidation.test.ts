@@ -1,5 +1,5 @@
-import { validateGameState, validatePlayerState, validateZoneState, validateCardState } from '../../../types/game/StateValidation';
 import { GameState, PlayerState, ZoneState, CardState } from '../../../types/game/GameState';
+import { validateGameState, validatePlayerState, validateZoneState, validateCardState } from '../../../types/game/StateValidation';
 
 describe('State Validation', () => {
   describe('validateCardState', () => {

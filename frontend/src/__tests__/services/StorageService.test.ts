@@ -1,7 +1,7 @@
 import { StorageService } from '../../services/storage/StorageService';
 import { StorageUtils } from '../../services/storage/StorageUtils';
-import { GameState } from '../../types/game';
 import { Card } from '../../types/card';
+import { GameState } from '../../types/game';
 
 const DB_NAME = 'mtg_commander';
 
@@ -60,7 +60,7 @@ describe('StorageService', () => {
       await expect(storageService.saveGameState({
         ...mockGameState,
         id: '456' // Different ID to force new save
-      })).rejects.toThrow('Storage quota exceeded | SessionStorage is not available');
+      })).rejects.toThrow('SessionStorage is not available');
       
       (sessionStorage as any)._setQuotaExceeded(false);
     });

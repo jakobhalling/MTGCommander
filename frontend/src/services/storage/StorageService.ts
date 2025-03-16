@@ -1,6 +1,7 @@
-import { StorageUtils } from './StorageUtils';
-import { GameState } from '../../types/game/GameState';
 import { Card } from '../../types/card/Card';
+import { GameState } from '../../types/game/GameState';
+
+import { StorageUtils } from './StorageUtils';
 
 const DB_NAME = 'mtg_commander';
 const DB_VERSION = 1;
@@ -86,7 +87,7 @@ export class StorageService {
   async saveCard(card: Card): Promise<void> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) throw new Error('Database not initialized');
+    if (!db) {throw new Error('Database not initialized');}
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readwrite');
@@ -101,7 +102,7 @@ export class StorageService {
   async getCard(cardId: string): Promise<Card | null> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) throw new Error('Database not initialized');
+    if (!db) {throw new Error('Database not initialized');}
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readonly');
@@ -116,7 +117,7 @@ export class StorageService {
   async getAllCards(): Promise<Card[]> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) throw new Error('Database not initialized');
+    if (!db) {throw new Error('Database not initialized');}
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readonly');
@@ -131,7 +132,7 @@ export class StorageService {
   async clearCards(): Promise<void> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) throw new Error('Database not initialized');
+    if (!db) {throw new Error('Database not initialized');}
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readwrite');

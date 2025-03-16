@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../index';
+
 import { GameState, PlayerState, ZoneState, CardState } from '../../types/game/GameState';
+import { RootState } from '../index';
 
 // Basic Selectors
 export const selectCurrentGame = (state: RootState): GameState | null => state.game.currentGame;
@@ -81,7 +82,7 @@ export const selectCardById = (cardId: string) => createSelector(
   (zones): CardState | null => {
     for (const zone of zones) {
       const card = zone.cards.find(c => typeof c === 'object' && (c as CardState).id === cardId);
-      if (card) return card as CardState;
+      if (card) {return card as CardState;}
     }
     return null;
   }
@@ -116,7 +117,7 @@ export const selectIsPlayerTurn = (playerId: string) => createSelector(
 export const selectCanPlayerAct = (playerId: string) => createSelector(
   [selectCurrentGame, selectCurrentPhase],
   (game, phase): boolean => {
-    if (!game) return false;
+    if (!game) {return false;}
     // Add your game-specific logic here
     return game.activePlayer === playerId && phase !== 'untap' && phase !== 'draw';
   }
@@ -125,7 +126,7 @@ export const selectCanPlayerAct = (playerId: string) => createSelector(
 export const selectGameStatus = createSelector(
   selectCurrentGame,
   (game): 'not_started' | 'in_progress' | 'finished' => {
-    if (!game) return 'not_started';
+    if (!game) {return 'not_started';}
     // Add your game-specific logic here
     return 'in_progress';
   }

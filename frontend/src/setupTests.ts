@@ -22,12 +22,12 @@ class MockStorage implements Storage {
   }
 
   getItem(key: string): string | null {
-    if (!this.available) throw new Error('Storage not available');
+    if (!this.available) {throw new Error('Storage not available');}
     return this.store[key] || null;
   }
 
   setItem(key: string, value: string) {
-    if (!this.available) throw new Error('Storage not available');
+    if (!this.available) {throw new Error('Storage not available');}
     if (this.quotaExceeded) {
       const error = new Error('Storage quota exceeded');
       error.name = 'QuotaExceededError';
@@ -37,17 +37,17 @@ class MockStorage implements Storage {
   }
 
   removeItem(key: string) {
-    if (!this.available) throw new Error('Storage not available');
+    if (!this.available) {throw new Error('Storage not available');}
     delete this.store[key];
   }
 
   get length(): number {
-    if (!this.available) throw new Error('Storage not available');
+    if (!this.available) {throw new Error('Storage not available');}
     return Object.keys(this.store).length;
   }
 
   key(index: number): string | null {
-    if (!this.available) throw new Error('Storage not available');
+    if (!this.available) {throw new Error('Storage not available');}
     return Object.keys(this.store)[index] || null;
   }
 
