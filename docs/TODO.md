@@ -78,10 +78,10 @@
   - [x] Active player indicator
 
 ### Core Game Actions
-- [ ] Implement action system
-  - [ ] Action creator interfaces
-  - [ ] Action validation
-  - [ ] Action execution pipeline
+- [x] Implement action system
+  - [x] Action creator interfaces
+  - [x] Action validation
+  - [x] Action execution pipeline
 - [ ] Create card movement system
   - [ ] Drag and drop implementation
   - [ ] Zone transition animations

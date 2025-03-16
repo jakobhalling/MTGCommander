@@ -3,6 +3,7 @@ import Card from './Card';
 import Zone from './Zone';
 import PlayerArea from './PlayerArea';
 import GameBoard from './GameBoard';
+import ActionPanel from './ActionPanel';
 import { mockCards, mockPlayers, mockGameState } from '../mockData';
 import { CardType } from '../types/game';
 
@@ -43,6 +44,12 @@ const ComponentShowcase: React.FC = () => {
           onClick={() => setSelectedTab('gameboard')}
         >
           Game Board
+        </button>
+        <button 
+          className={`px-4 py-2 ${selectedTab === 'actions' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setSelectedTab('actions')}
+        >
+          Actions
         </button>
       </div>
       
@@ -194,6 +201,19 @@ const ComponentShowcase: React.FC = () => {
             <h2 className="text-xl font-bold mb-2">Game Board Component</h2>
             <div className="game-board-example">
               <GameBoard />
+            </div>
+          </div>
+        )}
+        
+        {selectedTab === 'actions' && (
+          <div>
+            <h2 className="text-xl font-bold mb-2">Action System</h2>
+            <div className="action-panel-example">
+              <p className="mb-4">
+                This panel demonstrates the new action system that allows for validated game actions.
+                Try selecting a card and performing actions on it.
+              </p>
+              <ActionPanel playerId={mockPlayers[0].id} />
             </div>
           </div>
         )}

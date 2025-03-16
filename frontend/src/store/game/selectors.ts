@@ -50,8 +50,14 @@ export const selectPlayerCommanderDamage = (playerId: string) => createSelector(
 // Zone Selectors
 export const selectAllZones = createSelector(
   selectPlayers,
-  (players): ZoneState[] => 
-    Object.values(players).flatMap(player => Object.values(player.zones))
+  (players): ZoneState[] => {
+    if (!players || Object.keys(players).length === 0) {
+      return [];
+    }
+    return Object.values(players).flatMap(player => 
+      player && player.zones ? Object.values(player.zones) : []
+    );
+  }
 );
 
 export const selectZoneById = (zoneId: string) => createSelector(
@@ -81,17 +87,28 @@ export const selectCardById = (cardId: string) => createSelector(
   selectAllZones,
   (zones): CardState | null => {
     for (const zone of zones) {
-      if (zone.cards.includes(cardId)) {
-        return {
-          id: cardId,
-          name: "Card " + cardId,
-          types: [],
-          currentZone: zone.id,
-          ownerId: zone.ownerId,
-          isTapped: false,
-          counters: {},
-          attachments: []
-        };
+      // Handle both string and CardState objects in the cards array
+      for (const card of zone.cards) {
+        // Check if the card is a string ID that matches
+        if (card === cardId) {
+          return {
+            id: cardId,
+            name: "Card " + cardId,
+            types: [],
+            currentZone: zone.id,
+            ownerId: zone.ownerId,
+            isTapped: false,
+            counters: {},
+            attachments: []
+          };
+        }
+        
+        // Check if the card is an object with an id property that matches
+        // Use type assertion to avoid TypeScript errors
+        const cardObj = card as any;
+        if (cardObj && typeof cardObj === 'object' && cardObj.id === cardId) {
+          return cardObj as CardState;
+        }
       }
     }
     return null;
