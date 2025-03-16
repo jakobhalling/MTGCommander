@@ -9,7 +9,7 @@ try
     builder.Host.UseSerilog();
 
     // Add services to the container
-    builder.Services.AddMTGCommanderServices(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
+    builder.Services.AddMTGCommanderServices();
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
