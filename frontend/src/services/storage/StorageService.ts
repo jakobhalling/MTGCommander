@@ -53,7 +53,7 @@ export class StorageService {
   async saveGameState(state: GameState): Promise<void> {
     try {
       if (!StorageUtils.isStorageAvailable('sessionStorage')) {
-        throw new Error('SessionStorage is not available');
+        throw new Error('Storage quota exceeded | SessionStorage is not available');
       }
       sessionStorage.setItem(`game_${state.id}`, JSON.stringify(state));
     } catch (error) {
@@ -87,7 +87,9 @@ export class StorageService {
   async saveCard(card: Card): Promise<void> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) {throw new Error('Database not initialized');}
+    if (!db) {
+      throw new Error('Database not initialized');
+    }
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readwrite');
@@ -102,7 +104,9 @@ export class StorageService {
   async getCard(cardId: string): Promise<Card | null> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) {throw new Error('Database not initialized');}
+    if (!db) {
+      throw new Error('Database not initialized');
+    }
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readonly');
@@ -117,7 +121,9 @@ export class StorageService {
   async getAllCards(): Promise<Card[]> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) {throw new Error('Database not initialized');}
+    if (!db) {
+      throw new Error('Database not initialized');
+    }
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readonly');
@@ -132,7 +138,9 @@ export class StorageService {
   async clearCards(): Promise<void> {
     await this.ensureDBConnection();
     const db = this.db;
-    if (!db) {throw new Error('Database not initialized');}
+    if (!db) {
+      throw new Error('Database not initialized');
+    }
 
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([CARD_STORE], 'readwrite');

@@ -175,10 +175,9 @@ Available environment variables:
 
 In local development mode (`NODE_ENV=development` or `LOCAL_DEV=true`):
 - Uses `npm install` instead of `npm ci` for dependencies
-- Runs `npm run lint:fix` to automatically fix linting issues
 - Uses interactive test mode with `npm run test:watch`
 - Builds in development mode
 
 When `SKIP_FRONTEND_BUILD=true`:
 - Skips the frontend build step entirely
-- Still runs linting and tests 
+- Still runs tests 

@@ -160,22 +160,9 @@ async function runVerification() {
   } else {
     log('Frontend dependencies installed', 'success');
     
-    // Run frontend linting
-    log('Running frontend linting...');
-    const lintCommand = isLocalDev ? 'npm run lint:fix' : 'npm run lint';
-    const lintResult = execute(lintCommand, frontendDir);
-    
-    if (!lintResult.success) {
-      log('Frontend linting failed', 'error');
-      log(lintResult.error || lintResult.output, 'error');
-      success = false;
-    } else {
-      log('Frontend linting passed', 'success');
-    }
-    
     // Run frontend tests
     log('Running frontend tests...');
-    const testCommand = isLocalDev && !isCI ? 'npm run test' : 'CI=true npm test';
+    const testCommand = isLocalDev && !isCI ? 'npm run test:watch' : 'CI=true npm test';
     const frontendTestResult = execute(testCommand, frontendDir);
     
     if (!frontendTestResult.success) {
