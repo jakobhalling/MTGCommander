@@ -28,9 +28,7 @@ jobs:
           frontend/package-lock.json
     
     - name: Make verification scripts executable
-      run: |
-        chmod +x ./verify.sh
-        chmod +x ./verify.js
+      run: chmod +x ./verify.js
     
     - name: Run verification script
       run: node ./verify.js 
