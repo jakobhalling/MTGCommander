@@ -21,10 +21,10 @@
   - [x] Define card model (properties, methods, interfaces)
   - [x] Create card type system
   - [x] Implement card ability representation
-- [ ] Setup Scryfall integration
-  - [ ] Direct API client implementation
-  - [ ] Card data mapping
-  - [ ] Error handling
+- [x] Setup Scryfall integration ✅
+  - [x] Direct API client implementation
+  - [x] Card data mapping
+  - [x] Error handling
 - [ ] Implement browser storage
   - [ ] SessionStorage for active game data
   - [ ] IndexedDB for persistent card data
