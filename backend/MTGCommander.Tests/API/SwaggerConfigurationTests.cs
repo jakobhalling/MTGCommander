@@ -22,7 +22,7 @@ public class SwaggerConfigurationTests
                 webHost.ConfigureServices(services =>
                 {
                     services.AddControllers();
-                    services.AddMTGCommanderServices("TestConnectionString");
+                    services.AddMTGCommanderServices();
                 });
                 webHost.Configure(app =>
                 {

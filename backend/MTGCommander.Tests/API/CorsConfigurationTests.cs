@@ -22,7 +22,7 @@ public class CorsConfigurationTests
                 webHost.UseTestServer();
                 webHost.ConfigureServices(services =>
                 {
-                    services.AddMTGCommanderServices("TestConnectionString");
+                    services.AddMTGCommanderServices();
                     services.AddRouting();
                 });
                 webHost.Configure(app =>

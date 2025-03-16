@@ -42,16 +42,10 @@ public static class ServiceCollectionExtensions
             {
                 Title = "MTG Commander API",
                 Version = "v1",
-                Description = "API for MTG Commander game",
-                Contact = new OpenApiContact
-                {
-                    Name = "MTG Commander Team"
-                }
+                Description = "API for MTG Commander game"
             });
         });
 
-        // Add other services here
-        
         return services;
     }
 } 
