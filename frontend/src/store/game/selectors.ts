@@ -81,8 +81,18 @@ export const selectCardById = (cardId: string) => createSelector(
   selectAllZones,
   (zones): CardState | null => {
     for (const zone of zones) {
-      const card = zone.cards.find(c => typeof c === 'object' && (c as CardState).id === cardId);
-      if (card) {return card as CardState;}
+      if (zone.cards.includes(cardId)) {
+        return {
+          id: cardId,
+          name: "Card " + cardId,
+          types: [],
+          currentZone: zone.id,
+          ownerId: zone.ownerId,
+          isTapped: false,
+          counters: {},
+          attachments: []
+        };
+      }
     }
     return null;
   }

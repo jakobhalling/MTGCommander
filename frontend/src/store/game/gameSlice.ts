@@ -15,12 +15,16 @@ import {
   CardAttachmentPayload
 } from './types';
 
+// Import mock data for the showcase
+import { mockGameState } from '../../mockData';
+
 interface GameSliceState {
   currentGame: GameState | null;
 }
 
+// Use mock data for initial state in development
 const initialState: GameSliceState = {
-  currentGame: null
+  currentGame: process.env.NODE_ENV === 'development' ? mockGameState as any : null
 };
 
 const gameSlice = createSlice({
