@@ -1,127 +1,233 @@
 # MTG Commander Project TODO List
 
-## Backend (.NET)
+## Completed Setup ✅
+- Configure Entity Framework Core
+- Set up dependency injection
+- Configure CORS policies
+- Set up logging (Serilog)
+- Configure Swagger/OpenAPI documentation
 
-### 1. Project Setup
-- [x] Configure Entity Framework Core
-- [x] Set up dependency injection
-- [x] Configure CORS policies
-- [x] Set up logging (Serilog)
-- [x] Configure Swagger/OpenAPI documentation
+## Phase 1: Core Game Engine & Basic UI
 
-### 2. Card Management
-- [ ] Create Card model and DTOs
-- [ ] Implement Scryfall API integration service
-- [ ] Create card caching system
-- [ ] Implement card image storage and retrieval
-- [ ] Create card search and filtering endpoints
+### Game State Foundation
+- [ ] Design state interfaces
+  - [ ] Define core state types (GameState, PlayerState, ZoneState, etc.)
+  - [ ] Create action/event system interfaces
+  - [ ] Design state update patterns
+  - [ ] Define state validation rules
 
-### 3. Deck Management
-- [ ] Create Deck model and DTOs
-- [ ] Implement deck import parser
-- [ ] Create deck validation service (Commander rules)
-- [ ] Implement deck persistence
-- [ ] Create deck CRUD endpoints
+### Card System
+- [ ] Implement card data structure
+  - [ ] Define card model (properties, methods, interfaces)
+  - [ ] Create card type system
+  - [ ] Implement card ability representation
+- [ ] Setup Scryfall integration
+  - [ ] Direct API client implementation
+  - [ ] Card data mapping
+  - [ ] Error handling
+- [ ] Implement browser storage
+  - [ ] SessionStorage for active game data
+  - [ ] IndexedDB for persistent card data
+  - [ ] Storage management utilities
 
-### 4. Game State
-- [ ] Design game state models
-- [ ] Implement zone management
-- [ ] Create turn structure system
-- [ ] Implement priority system
-- [ ] Create game state persistence
+### Basic Game UI
+- [ ] Create game board layout
+  - [ ] Define responsive grid system
+  - [ ] Create zone layout components
+  - [ ] Implement player areas
+- [ ] Build card component
+  - [ ] Card rendering
+  - [ ] Card interaction handlers
+  - [ ] Card state visualization
+- [ ] Implement game zones
+  - [ ] Hand component
+  - [ ] Battlefield component
+  - [ ] Graveyard/Exile components
+  - [ ] Command zone component
+- [ ] Create phase/turn indicators
+  - [ ] Phase display component
+  - [ ] Turn structure visualization
+  - [ ] Active player indicator
 
-### 5. AI System
-- [ ] Design AI player model
-- [ ] Implement basic decision making
-- [ ] Create combat logic
-- [ ] Implement targeting system
-- [ ] Add predefined deck configurations
+### Core Game Actions
+- [ ] Implement action system
+  - [ ] Action creator interfaces
+  - [ ] Action validation
+  - [ ] Action execution pipeline
+- [ ] Create card movement system
+  - [ ] Drag and drop implementation
+  - [ ] Zone transition animations
+  - [ ] Movement validation
+- [ ] Basic combat system
+  - [ ] Attack/block declaration
+  - [ ] Combat damage calculation
+  - [ ] Combat UI feedback
 
-## Frontend (React)
+## Phase 2: Single Player Experience
 
-### 1. Project Setup
-- [ ] Configure TypeScript
-- [ ] Set up React Router
-- [ ] Configure state management (Redux)
-- [ ] Set up API client (Axios)
-- [ ] Configure environment variables
+### Enhanced Game Flow
+- [ ] Complete turn system
+  - [ ] Phase implementation
+  - [ ] Priority system
+  - [ ] Turn transitions
+- [ ] Targeting system
+  - [ ] Target selection UI
+  - [ ] Targeting validation
+  - [ ] Target highlighting
+- [ ] Mana system
+  - [ ] Mana pool management
+  - [ ] Cost calculation
+  - [ ] Payment UI
 
-### 2. UI Components
-- [ ] Create Card component
-- [ ] Implement GameBoard component
-- [ ] Create Zone components
-- [ ] Design Player Info display
-- [ ] Implement Stack visualization
+### Game Rules
+- [ ] Commander rules
+  - [ ] Commander casting
+  - [ ] Command zone mechanics
+  - [ ] Commander damage tracking
+- [ ] Card type rules
+  - [ ] Type-specific behaviors
+  - [ ] Type interaction rules
+- [ ] Timing rules
+  - [ ] Stack implementation
+  - [ ] Timing restrictions
+  - [ ] Priority passing
 
-### 3. Game Mechanics
-- [ ] Implement drag and drop system
-- [ ] Create manual controls menu
-- [ ] Implement card action system
-- [ ] Create targeting interface
-- [ ] Design phase/turn indicators
+### Enhanced UI
+- [ ] Improved card display
+  - [ ] Card detail view
+  - [ ] Card state indicators
+  - [ ] Hover effects
+- [ ] Game state visualization
+  - [ ] Life total display
+  - [ ] Resource indicators
+  - [ ] Stack visualization
+- [ ] Action feedback
+  - [ ] Visual effect system
+  - [ ] Action confirmation
+  - [ ] Error messaging
 
-### 4. Deck Management
-- [ ] Create deck import interface
-- [ ] Implement deck validation feedback
-- [ ] Design deck viewer
-- [ ] Create commander selection UI
+## Phase 3: Deck Management & Authentication
 
-### 5. Game State
-- [ ] Implement game state synchronization
-- [ ] Create reconnection handling
-- [ ] Design error handling
-- [ ] Implement game action history
+### Backend (Minimal)
+- [ ] User authentication
+  - [ ] JWT implementation
+  - [ ] Basic user model
+  - [ ] Login/register endpoints
+- [ ] Deck storage
+  - [ ] Deck model
+  - [ ] CRUD endpoints
+  - [ ] Validation endpoints
 
-### 6. Styling
-- [ ] Set up Tailwind CSS
-- [ ] Create base theme
-- [ ] Design responsive layouts
-- [ ] Implement animations
-- [ ] Create loading states
+### Frontend Deck Management
+- [ ] Deck builder
+  - [ ] Card search interface
+  - [ ] Deck composition view
+  - [ ] Deck statistics
+- [ ] Deck import/export
+  - [ ] Format parser
+  - [ ] Export generator
+  - [ ] Validation feedback
+- [ ] Commander selection
+  - [ ] Legal commander filtering
+  - [ ] Commander preview
+  - [ ] Deck validation
 
-## Infrastructure
+### User Interface
+- [ ] Authentication UI
+  - [ ] Login/register forms
+  - [ ] Profile management
+  - [ ] Session handling
+- [ ] Deck management UI
+  - [ ] Deck list view
+  - [ ] Deck editor
+  - [ ] Import/export interface
 
-### 1. Database
-- [ ] Design database schema
-- [ ] Create migrations
-- [ ] Set up indexes
-- [ ] Configure backup strategy
+## Phase 4: AI Opponent
 
-### 2. Caching
-- [ ] Configure Redis
-- [ ] Implement card cache
-- [ ] Set up session storage
-- [ ] Create cache invalidation strategy
+### AI Core
+- [ ] Decision making system
+  - [ ] Action evaluation
+  - [ ] Priority management
+  - [ ] Resource allocation
+- [ ] Combat AI
+  - [ ] Attack planning
+  - [ ] Block assignment
+  - [ ] Combat trick usage
+- [ ] Targeting AI
+  - [ ] Target evaluation
+  - [ ] Spell targeting
+  - [ ] Ability targeting
 
-### 3. API
-- [ ] Design RESTful endpoints
-- [ ] Implement rate limiting
-- [ ] Set up API versioning
-- [ ] Create API documentation
+### AI Integration
+- [ ] AI player interface
+  - [ ] Action execution
+  - [ ] State monitoring
+  - [ ] Decision visualization
+- [ ] Difficulty levels
+  - [ ] Strategy profiles
+  - [ ] Skill simulation
+  - [ ] Personality traits
 
-### 4. Testing
-- [ ] Set up unit testing
-- [ ] Create integration tests
-- [ ] Implement E2E testing
-- [ ] Set up CI/CD pipeline
+## Phase 5: Multiplayer Implementation
 
-## Documentation
+### Network Layer
+- [ ] WebRTC implementation
+  - [ ] Peer connection management
+  - [ ] Data channel setup
+  - [ ] Connection monitoring
+- [ ] State synchronization
+  - [ ] State diff generation
+  - [ ] State merging
+  - [ ] Conflict resolution
 
-### 1. Technical Documentation
-- [ ] Create API documentation
-- [ ] Document database schema
-- [ ] Create architecture diagrams
-- [ ] Document deployment process
+### Consensus System
+- [ ] State validation
+  - [ ] Action verification
+  - [ ] State consistency checks
+  - [ ] Error recovery
+- [ ] Voting mechanism
+  - [ ] State proposal
+  - [ ] Vote collection
+  - [ ] Decision application
 
-### 2. User Documentation
-- [ ] Create user guide
-- [ ] Document game rules
-- [ ] Create AI opponent guide
-- [ ] Document keyboard shortcuts
+### Multiplayer Features
+- [ ] Session management
+  - [ ] Game creation
+  - [ ] Player joining
+  - [ ] Spectator mode
+- [ ] Player interaction
+  - [ ] Chat system
+  - [ ] Player status
+  - [ ] Connection indicators
 
-## Phase 1 Priority Items
-1. Basic card display and game board
-2. Simple deck import
-3. Basic game state management
-4. Manual card movement
-5. Simple AI opponent 
+## Phase 6: Polish & Enhancement
+
+### Optimization
+- [ ] Performance tuning
+  - [ ] State update optimization
+  - [ ] Render optimization
+  - [ ] Network efficiency
+- [ ] Memory management
+  - [ ] Cache optimization
+  - [ ] Resource cleanup
+  - [ ] Memory monitoring
+
+### UI Enhancement
+- [ ] Advanced animations
+  - [ ] Card movements
+  - [ ] Effect visualization
+  - [ ] State transitions
+- [ ] Sound system
+  - [ ] Action feedback
+  - [ ] Ambient effects
+  - [ ] Music integration
+
+### Additional Features
+- [ ] Tournament system
+  - [ ] Bracket management
+  - [ ] Match reporting
+  - [ ] Tournament UI
+- [ ] Achievement system
+  - [ ] Achievement tracking
+  - [ ] Reward system
+  - [ ] Progress display 

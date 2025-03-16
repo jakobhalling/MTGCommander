@@ -46,8 +46,8 @@ An online web application for playing Magic: The Gathering Commander (EDH) forma
 ##### Interaction System
 - **Drag and Drop Interface**
   - Card movement between zones
-  - Targeting system for spells and abilities
-  - Attachment management (Auras, Equipment)
+  - Targeting system for spells and abilities (later)
+  - Attachment management (Auras, Equipment) (later)
 
 - **Manual Controls**
   - Context menus for card actions
@@ -56,7 +56,7 @@ An online web application for playing Magic: The Gathering Commander (EDH) forma
   - Token creation
   - Card state toggles (tap/untap)
   - Manual scry interface
-  - Stack management
+  - Stack management (later)
 
 #### 3. Game Mechanics
 
@@ -135,13 +135,11 @@ An online web application for playing Magic: The Gathering Commander (EDH) forma
 
 #### Backend
 - .NET Core Web API
-- Entity Framework Core
-- SQL Database
-- Redis (caching)
+- Storage TBD
 
 #### External Services
 - Scryfall API (card data)
-- Cloud Storage (game state persistence)
+- Cloud Storage (game state persistence - tbd)
 
 ### Development Phases
 
