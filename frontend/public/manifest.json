@@ -1,0 +1,9 @@
+{
+  "short_name": "MTG Commander",
+  "name": "Magic: The Gathering Commander Game",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
