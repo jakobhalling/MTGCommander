@@ -33,6 +33,7 @@
     "build": "react-scripts build",
     "test": "CI=true react-scripts test",
     "test:watch": "react-scripts test --watchAll=false",
+    "test:dev": "react-scripts test --silent --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

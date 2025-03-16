@@ -162,7 +162,7 @@ async function runVerification() {
     
     // Run frontend tests
     log('Running frontend tests...');
-    const testCommand = isLocalDev && !isCI ? 'npm run test:watch' : 'CI=true npm test';
+    const testCommand = isLocalDev && !isCI ? 'npm run test:dev' : 'CI=true npm test';
     const frontendTestResult = execute(testCommand, frontendDir);
     
     if (!frontendTestResult.success) {

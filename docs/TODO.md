@@ -51,7 +51,7 @@
 - [x] State Selectors
   - [x] Basic state selectors
   - [x] Memoized selectors
-  - [ ] Selector unit tests
+  - [x] Selector unit tests
 - [ ] State Middleware
   - [ ] Action logging middleware
   - [ ] Validation middleware
