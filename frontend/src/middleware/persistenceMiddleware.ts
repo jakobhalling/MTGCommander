@@ -5,7 +5,7 @@ import { GAME_ACTIONS } from '../store/game/types';
 /**
  * Middleware that persists game state to browser storage after state changes
  */
-const persistenceMiddleware: Middleware = store => next => action => {
+const persistenceMiddleware: Middleware = store => next => (action: any) => {
   // Process the action first
   const result = next(action);
   

@@ -52,11 +52,11 @@
   - [x] Basic state selectors
   - [x] Memoized selectors
   - [x] Selector unit tests
-- [ ] State Middleware
-  - [ ] Action logging middleware
-  - [ ] Validation middleware
-  - [ ] State persistence middleware
-  - [ ] Middleware tests
+- [x] State Middleware
+  - [x] Action logging middleware
+  - [x] Validation middleware
+  - [x] State persistence middleware
+  - [x] Middleware tests
 
 ### Basic Game UI
 - [ ] Create game board layout

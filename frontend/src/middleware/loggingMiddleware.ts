@@ -1,9 +1,9 @@
-import { Middleware } from 'redux';
+import { Middleware, AnyAction } from 'redux';
 
 /**
  * Middleware that logs all dispatched actions and the resulting state
  */
-const loggingMiddleware: Middleware = store => next => action => {
+const loggingMiddleware: Middleware = store => next => (action: any) => {
   if (action.type) {
     console.group(`Action: ${action.type}`);
     console.log('Previous State:', store.getState());

@@ -6,8 +6,7 @@ describe('Persistence Middleware', () => {
   let next: jest.Mock;
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
-  let sessionStorageSetItemSpy: jest.SpyInstance;
-  let sessionStorageRemoveItemSpy: jest.SpyInstance;
+  let originalSessionStorage: Storage;
   
   const mockGameState = {
     id: 'game-1',
@@ -26,6 +25,25 @@ describe('Persistence Middleware', () => {
   };
   
   beforeEach(() => {
+    // Save original sessionStorage
+    originalSessionStorage = window.sessionStorage;
+    
+    // Create mock sessionStorage
+    const mockSessionStorage = {
+      getItem: jest.fn(),
+      setItem: jest.fn(),
+      removeItem: jest.fn(),
+      clear: jest.fn(),
+      key: jest.fn(),
+      length: 0
+    };
+    
+    // Replace sessionStorage with mock
+    Object.defineProperty(window, 'sessionStorage', {
+      value: mockSessionStorage,
+      writable: true
+    });
+    
     store = {
       getState: jest.fn(() => ({
         game: {
@@ -38,17 +56,17 @@ describe('Persistence Middleware', () => {
     
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-    
-    // Mock sessionStorage
-    sessionStorageSetItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation();
-    sessionStorageRemoveItemSpy = jest.spyOn(Storage.prototype, 'removeItem').mockImplementation();
   });
   
   afterEach(() => {
     consoleLogSpy.mockRestore();
     consoleErrorSpy.mockRestore();
-    sessionStorageSetItemSpy.mockRestore();
-    sessionStorageRemoveItemSpy.mockRestore();
+    
+    // Restore original sessionStorage
+    Object.defineProperty(window, 'sessionStorage', {
+      value: originalSessionStorage,
+      writable: true
+    });
   });
   
   it('should pass the action to the next middleware', () => {
@@ -65,7 +83,7 @@ describe('Persistence Middleware', () => {
     const middleware = persistenceMiddleware(store)(next);
     middleware(action);
     
-    expect(sessionStorageSetItemSpy).toHaveBeenCalledWith(
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(
       'currentGame',
       JSON.stringify(mockGameState)
     );
@@ -77,7 +95,7 @@ describe('Persistence Middleware', () => {
     const middleware = persistenceMiddleware(store)(next);
     middleware(action);
     
-    expect(sessionStorageRemoveItemSpy).toHaveBeenCalledWith('currentGame');
+    expect(window.sessionStorage.removeItem).toHaveBeenCalledWith('currentGame');
     expect(consoleLogSpy).toHaveBeenCalledWith('Game state cleared from storage');
   });
   
@@ -86,13 +104,13 @@ describe('Persistence Middleware', () => {
     const middleware = persistenceMiddleware(store)(next);
     middleware(action);
     
-    expect(sessionStorageSetItemSpy).not.toHaveBeenCalled();
-    expect(sessionStorageRemoveItemSpy).not.toHaveBeenCalled();
+    expect(window.sessionStorage.setItem).not.toHaveBeenCalled();
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled();
   });
   
   it('should handle storage errors gracefully', () => {
     // Simulate a storage error
-    sessionStorageSetItemSpy.mockImplementation(() => {
+    (window.sessionStorage.setItem as jest.Mock).mockImplementation(() => {
       throw new Error('Storage error');
     });
     
