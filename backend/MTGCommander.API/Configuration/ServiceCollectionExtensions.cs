@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using MTGCommander.Infrastructure.External;
 
 namespace MTGCommander.API.Configuration;
 
@@ -45,6 +46,10 @@ public static class ServiceCollectionExtensions
                 Description = "API for MTG Commander game"
             });
         });
+
+        // Add HttpClient and Scryfall client
+        services.AddHttpClient();
+        services.AddScoped<IScryfallClient, ScryfallClient>();
 
         return services;
     }
