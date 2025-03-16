@@ -27,8 +27,10 @@ jobs:
         cache-dependency-path: |
           frontend/package-lock.json
     
-    - name: Make verification script executable
-      run: chmod +x ./verify.js
+    - name: Make verification scripts executable
+      run: |
+        chmod +x ./verify.sh
+        chmod +x ./verify.js
     
     - name: Run verification script
       run: node ./verify.js 

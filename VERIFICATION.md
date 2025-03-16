@@ -1,28 +1,41 @@
-# MTG Commander Verification Script
+# MTG Commander Verification Scripts
 
-This repository contains a Node.js script to verify the build and test status of both the frontend and backend components of the MTG Commander project.
+This repository contains scripts to verify the build and test status of both the frontend and backend components of the MTG Commander project.
 
 ## Prerequisites
 
 - .NET SDK (for backend)
 - Node.js and npm (for frontend)
+- Bash shell (available on Linux/macOS and through WSL on Windows)
 
-## Using the Verification Script
+## Available Verification Scripts
+
+### Bash Script
 
 ```bash
-# Make the script executable (Unix-based systems)
+# Make the script executable
+chmod +x verify.sh
+
+# Run the verification script
+./verify.sh
+```
+
+### Node.js Script (Enhanced Reporting)
+
+```bash
+# Make the script executable
 chmod +x verify.js
 
 # Run the verification script
 ./verify.js
 
-# Alternatively, use node directly (works on all platforms)
+# Alternatively, use node directly
 node verify.js
 ```
 
-## What the Script Does
+## What the Scripts Do
 
-The verification script performs the following actions:
+The verification scripts perform the following actions:
 
 1. **Backend Verification**
    - Build the .NET solution
@@ -33,13 +46,14 @@ The verification script performs the following actions:
    - Build the frontend application
    - Run all frontend unit tests
 
-## Features
+## Script Differences
 
-The Node.js verification script includes:
-- Colored and formatted output
-- Detailed error reporting
-- Execution time tracking
-- Better error handling
+- **verify.sh**: Basic bash script with simple output
+- **verify.js**: Enhanced Node.js script with:
+  - Colored and formatted output
+  - Detailed error reporting
+  - Execution time tracking
+  - Better error handling
 
 ## Exit Codes
 
@@ -57,7 +71,7 @@ If you encounter any issues:
 
 ## Integration with CI/CD
 
-This script can be integrated into CI/CD pipelines to automate verification:
+These scripts can be integrated into CI/CD pipelines to automate verification:
 
 - GitHub Actions
 - Azure DevOps
@@ -67,4 +81,4 @@ This script can be integrated into CI/CD pipelines to automate verification:
 
 ## Adding Custom Verification Steps
 
-To add custom verification steps, edit the script and add your commands in the appropriate sections. 
+To add custom verification steps, edit the scripts and add your commands in the appropriate sections. 
