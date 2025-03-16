@@ -1,7 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using MTGCommander.Infrastructure.Database;
 using Serilog;
 using Serilog.Events;
 
@@ -9,7 +7,7 @@ namespace MTGCommander.API.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddMTGCommanderServices(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddMTGCommanderServices(this IServiceCollection services)
     {
         // Configure Serilog
         Log.Logger = new LoggerConfiguration()
@@ -26,10 +24,6 @@ public static class ServiceCollectionExtensions
 
         services.AddLogging(loggingBuilder =>
             loggingBuilder.AddSerilog(dispose: true));
-
-        // Add DbContext
-        services.AddDbContext<MTGCommanderDbContext>(options =>
-            options.UseSqlServer(connectionString));
 
         // Add CORS
         services.AddCors(options =>
