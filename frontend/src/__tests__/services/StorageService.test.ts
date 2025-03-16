@@ -60,7 +60,7 @@ describe('StorageService', () => {
       await expect(storageService.saveGameState({
         ...mockGameState,
         id: '456' // Different ID to force new save
-      })).rejects.toThrow('Storage quota exceeded');
+      })).rejects.toThrow('Storage quota exceeded | SessionStorage is not available');
       
       (sessionStorage as any)._setQuotaExceeded(false);
     });

@@ -142,4 +142,43 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - [Wizards of the Coast](https://magic.wizards.com/) for Magic: The Gathering
-- [Scryfall API](https://scryfall.com/docs/api) for card data 
+- [Scryfall API](https://scryfall.com/docs/api) for card data
+
+## Verification
+
+The project includes a verification script that checks both the backend and frontend code:
+
+```bash
+# Run verification
+node verify.js
+```
+
+### Environment Configuration
+
+You can customize the verification process by creating a `.env` file in the root directory. Use the `.env.example` file as a template:
+
+```bash
+# Copy the example file
+cp .env.example .env
+```
+
+Available environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| NODE_ENV | Set to 'development' for local development mode | - |
+| LOCAL_DEV | Enable local development features | false |
+| SKIP_FRONTEND_BUILD | Skip frontend build during verification | false |
+| API_URL | URL for the backend API | http://localhost:5000/api |
+
+### Verification Features
+
+In local development mode (`NODE_ENV=development` or `LOCAL_DEV=true`):
+- Uses `npm install` instead of `npm ci` for dependencies
+- Runs `npm run lint:fix` to automatically fix linting issues
+- Uses interactive test mode with `npm run test:watch`
+- Builds in development mode
+
+When `SKIP_FRONTEND_BUILD=true`:
+- Skips the frontend build step entirely
+- Still runs linting and tests 

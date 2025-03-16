@@ -58,7 +58,7 @@ export class StorageService {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'QuotaExceededError') {
-          throw new Error('Storage quota exceeded');
+          throw new Error('Storage quota exceeded | SessionStorage is not available');
         }
       }
       throw error;
