@@ -1,3 +1,149 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+/* Game Board Layout */
+.game-board {
+  @apply grid grid-cols-1 gap-4 p-4 min-h-screen bg-green-800;
+}
+
+.player-areas {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.shared-zones {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4 mt-4;
+}
+
+.game-info {
+  @apply bg-gray-800 text-white p-2 rounded-md mt-4 flex justify-between;
+}
+
+/* Player Area */
+.player-area {
+  @apply bg-gray-700 rounded-md p-4 text-white;
+}
+
+.player-position-bottom {
+  @apply order-1;
+}
+
+.player-position-top {
+  @apply order-2;
+}
+
+.player-position-left {
+  @apply order-3;
+}
+
+.player-position-right {
+  @apply order-4;
+}
+
+.active-player {
+  @apply ring-2 ring-yellow-400;
+}
+
+.player-info {
+  @apply flex justify-between items-center mb-2;
+}
+
+.player-name {
+  @apply text-lg font-bold;
+}
+
+.player-life {
+  @apply bg-red-600 px-2 py-1 rounded-md;
+}
+
+.player-poison {
+  @apply bg-green-600 px-2 py-1 rounded-md ml-2;
+}
+
+.player-zones {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-2;
+}
+
+/* Zone Component */
+.zone {
+  @apply bg-gray-800 rounded-md p-2 min-h-[100px];
+}
+
+.zone-header {
+  @apply flex justify-between items-center mb-2;
+}
+
+.zone-header h3 {
+  @apply text-sm font-bold;
+}
+
+.card-count {
+  @apply bg-gray-600 px-2 py-0.5 rounded-full text-xs;
+}
+
+.zone-content {
+  @apply flex flex-wrap gap-1;
+}
+
+.zone-empty {
+  @apply text-gray-500 text-sm italic;
+}
+
+.zone-battlefield {
+  @apply col-span-1 md:col-span-2 min-h-[200px];
+}
+
+.zone-command-zone {
+  @apply bg-purple-900;
+}
+
+/* Card Component */
+.card {
+  @apply bg-gray-200 rounded-md overflow-hidden cursor-pointer transition-transform hover:scale-105;
+  width: 63px;
+  height: 88px;
+}
+
+.card-with-image {
+  @apply relative w-full h-full;
+}
+
+.card-image {
+  @apply w-full h-full object-cover;
+}
+
+.card-name-overlay {
+  @apply absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1 truncate;
+}
+
+.card-fallback {
+  @apply p-1 text-black text-xs flex flex-col h-full;
+}
+
+.card-name {
+  @apply font-bold text-xs truncate;
+}
+
+.card-type {
+  @apply text-xs italic truncate;
+}
+
+.card-mana-cost {
+  @apply text-xs text-right;
+}
+
+.card-text {
+  @apply text-xs mt-1 flex-grow overflow-hidden;
+}
+
+.card-pt, .card-loyalty {
+  @apply text-xs text-right font-bold;
+}
+
+.tapped {
+  @apply rotate-90;
+}
+
+.selected {
+  @apply ring-2 ring-blue-500;
+} 
