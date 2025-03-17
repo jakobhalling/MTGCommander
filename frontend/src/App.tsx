@@ -1,60 +1,101 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Header,
+  HeaderContainer,
+  HeaderName,
+  HeaderNavigation,
+  HeaderMenuItem,
+  Content,
+  Theme,
+  Button
+} from '@carbon/react';
 import GameBoard from './components/GameBoard';
 import ComponentShowcase from './components/ComponentShowcase';
 
+interface HeaderRenderProps {
+  isSideNavExpanded: boolean;
+  onClickSideNavExpand: () => void;
+}
+
 const App: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
-    <div data-testid="app-container" className="min-h-screen bg-gray-100">
-      <nav className="bg-blue-600 text-white p-4">
-        <div className="container mx-auto flex justify-between">
-          <div className="text-xl font-bold">MTG Commander</div>
-          <div className="flex space-x-4">
-            <Link to="/" className="hover:underline">Home</Link>
-            <Link to="/game" className="hover:underline">Game</Link>
-            <Link to="/showcase" className="hover:underline">Component Showcase</Link>
-          </div>
-        </div>
-      </nav>
+    <Theme theme="g100">
+      <div className="cds--g100" data-testid="app-container">
+        <HeaderContainer
+          render={({ isSideNavExpanded, onClickSideNavExpand }: HeaderRenderProps) => (
+            <Header aria-label="MTG Commander">
+              <HeaderName prefix="">MTG Commander</HeaderName>
+              <HeaderNavigation aria-label="MTG Commander">
+                <HeaderMenuItem
+                  isCurrentPage={location.pathname === '/'}
+                  onClick={() => navigate('/')}
+                >
+                  Home
+                </HeaderMenuItem>
+                <HeaderMenuItem
+                  isCurrentPage={location.pathname === '/game'}
+                  onClick={() => navigate('/game')}
+                >
+                  Game
+                </HeaderMenuItem>
+                <HeaderMenuItem
+                  isCurrentPage={location.pathname === '/showcase'}
+                  onClick={() => navigate('/showcase')}
+                >
+                  Component Showcase
+                </HeaderMenuItem>
+              </HeaderNavigation>
+            </Header>
+          )}
+        />
       
-      <div className="container mx-auto mt-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/game" element={<GameBoard />} />
-          <Route path="/showcase" element={<ComponentShowcase />} />
-        </Routes>
+        <Content>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/game" element={<GameBoard />} />
+            <Route path="/showcase" element={<ComponentShowcase />} />
+          </Routes>
+        </Content>
       </div>
-    </div>
+    </Theme>
   );
 };
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-4">Welcome to MTG Commander</h1>
-      <p className="mb-4">
+      <h1 className="text-4xl font-bold mb-4">Welcome to MTG Commander</h1>
+      <p className="mb-8 text-lg">
         This is a digital implementation of the Magic: The Gathering Commander format.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-md shadow-md">
-          <h2 className="text-xl font-bold mb-2">Play Game</h2>
-          <p className="mb-4">Start a new game or continue where you left off.</p>
-          <Link 
-            to="/game" 
-            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">Play Game</h2>
+          <p className="mb-6">Start a new game or continue where you left off.</p>
+          <Button
+            onClick={() => navigate('/game')}
+            kind="primary"
+            size="lg"
           >
             Go to Game
-          </Link>
+          </Button>
         </div>
-        <div className="bg-white p-4 rounded-md shadow-md">
-          <h2 className="text-xl font-bold mb-2">Component Showcase</h2>
-          <p className="mb-4">View and interact with all the UI components.</p>
-          <Link 
-            to="/showcase" 
-            className="inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h2 className="text-2xl font-bold mb-4">Component Showcase</h2>
+          <p className="mb-6">View and interact with all the UI components.</p>
+          <Button
+            onClick={() => navigate('/showcase')}
+            kind="secondary"
+            size="lg"
           >
             View Showcase
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

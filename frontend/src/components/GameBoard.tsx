@@ -1,39 +1,36 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { GameBoardProps, PlayerType, CardType, PlayerPosition } from '../types/game';
+import { 
+  Grid, 
+  Column, 
+  Tile,
+  Tag,
+  Loading,
+  InlineNotification,
+  AspectRatio
+} from '@carbon/react';
+import { GameBoardProps, PlayerType, PlayerPosition } from '../types/game';
 import PlayerArea from './PlayerArea';
 import Zone from './Zone';
 import { RootState } from '../store';
 
 const GameBoard: React.FC<GameBoardProps> = () => {
-  // Get game state from Redux store
   const gameState = useSelector((state: RootState) => state.game.currentGame);
   
-  // Convert players record to array for rendering
   const players: PlayerType[] = gameState ? 
     Object.values(gameState.players).map(player => ({
       id: player.id,
       name: player.name,
       life: player.life,
       isActive: player.id === gameState.activePlayer,
-      poisonCounters: 0, // Add this from player state when implemented
-      hand: [], // These will be populated from the zones when implemented
+      poisonCounters: 0,
+      hand: [],
       graveyard: [],
       exile: [],
       battlefield: [],
       commandZone: []
     })) : [];
-  
-  // For now, we'll use empty arrays for shared zones
-  const battlefield: CardType[] = [];
-  const commandZone: CardType[] = [];
-  
-  const handleCardClick = (card: CardType) => {
-    // This will be implemented later with game actions
-    console.log('Card clicked:', card);
-  };
 
-  // Determine player positions based on number of players
   const getPlayerPosition = (index: number, totalPlayers: number): PlayerPosition => {
     if (totalPlayers <= 2) {
       return index === 0 ? 'bottom' : 'top';
@@ -41,55 +38,91 @@ const GameBoard: React.FC<GameBoardProps> = () => {
       const positions: PlayerPosition[] = ['bottom', 'top', 'left', 'right'];
       return positions[index % positions.length];
     } else {
-      // For more than 4 players, we'd need a more complex layout
       return 'bottom';
     }
   };
 
-  return (
-    <div className="game-board grid" data-testid="game-board">
-      {/* Player areas */}
-      <div className="player-areas">
-        {players.map((player: PlayerType, index: number) => (
-          <PlayerArea 
-            key={player.id} 
-            player={player} 
-            position={getPlayerPosition(index, players.length)} 
+  if (!gameState) {
+    return (
+      <AspectRatio ratio="1x1">
+        <div className="flex items-center justify-center">
+          <Loading 
+            description="Loading game state..." 
+            withOverlay={false}
           />
-        ))}
-      </div>
-      
-      {/* Shared zones */}
-      <div className="shared-zones">
-        <Zone 
-          name="battlefield" 
-          playerId="shared" 
-          cards={battlefield} 
-          onCardClick={handleCardClick}
+        </div>
+      </AspectRatio>
+    );
+  }
+
+  return (
+    <Grid fullWidth>
+      {/* Game Status Bar */}
+      <Column lg={16} md={8} sm={4}>
+        <InlineNotification
+          kind="info"
+          title="Game Status"
+          subtitle={`Turn ${gameState.turnNumber} | Phase: ${gameState.phase}`}
+          lowContrast
+          hideCloseButton
         />
-        
-        <Zone 
-          name="command-zone" 
-          playerId="shared" 
-          cards={commandZone} 
-          onCardClick={handleCardClick}
-        />
-      </div>
-      
-      {/* Game info and phase indicators will be added here */}
-      <div className="game-info">
-        <div className="turn-indicator">
-          Turn: {gameState?.turnNumber || 1}
-        </div>
-        <div className="phase-indicator">
-          Phase: {gameState?.phase || 'main1'}
-        </div>
-        <div className="active-player-indicator">
-          Active Player: {players.find((p: PlayerType) => p.id === gameState?.activePlayer)?.name || 'None'}
-        </div>
-      </div>
-    </div>
+      </Column>
+
+      {/* Player Areas */}
+      <Column lg={16} md={8} sm={4}>
+        <Grid narrow>
+          {players.map((player: PlayerType, index: number) => (
+            <Column 
+              key={player.id} 
+              lg={players.length <= 2 ? 16 : 8} 
+              md={8} 
+              sm={4}
+              className={`player-position-${getPlayerPosition(index, players.length)}`}
+            >
+              <PlayerArea 
+                player={player} 
+                position={getPlayerPosition(index, players.length)} 
+              />
+            </Column>
+          ))}
+        </Grid>
+      </Column>
+
+      {/* Shared Zones */}
+      <Column lg={16} md={8} sm={4}>
+        <Grid narrow className="shared-zones">
+          <Column lg={10} md={4} sm={4}>
+            <Tile>
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-lg font-semibold">Shared Battlefield</h3>
+                {gameState.activePlayer && (
+                  <Tag type="green">
+                    Active: {players.find(p => p.id === gameState.activePlayer)?.name}
+                  </Tag>
+                )}
+              </div>
+              <Zone 
+                name="battlefield" 
+                playerId="shared" 
+                cards={[]} 
+              />
+            </Tile>
+          </Column>
+          
+          <Column lg={6} md={4} sm={4}>
+            <Tile>
+              <h3 className="text-lg font-semibold mb-4">Command Zone</h3>
+              <Zone 
+                name="command-zone" 
+                playerId="shared" 
+                cards={[]} 
+              />
+            </Tile>
+          </Column>
+        </Grid>
+      </Column>
+    </Grid>
   );
 };
 
-export default GameBoard; 
+export default GameBoard;

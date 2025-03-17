@@ -4,7 +4,7 @@
 
 /* Game Board Layout */
 .game-board {
-  @apply grid grid-cols-1 gap-4 p-4 min-h-screen bg-green-800;
+  @apply grid grid-cols-1 gap-4 p-4 min-h-screen;
 }
 
 .player-areas {
@@ -146,4 +146,4 @@
 
 .selected {
   @apply ring-2 ring-blue-500;
-} 
+}

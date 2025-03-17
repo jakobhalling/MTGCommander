@@ -10,6 +10,24 @@ import {
 import { selectAllZones, selectCardById } from '../store/game/selectors';
 import { RootState } from '../store';
 import { CardState, ZoneState } from '../types/game/GameState';
+import {
+  Select,
+  SelectItem,
+  Button,
+  Grid,
+  Column,
+  Tile,
+  DataTable,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+  Tag,
+  Loading,
+  InlineLoading
+} from '@carbon/react';
 
 interface ActionPanelProps {
   playerId: string;
@@ -279,122 +297,159 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ playerId }) => {
   }
   
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-      <h2 className="text-xl font-bold text-white mb-4">Action System Demo</h2>
-      
-      {useMockData && (
-        <div className="bg-blue-700 text-white p-2 mb-4 rounded">
-          Using mock data for demonstration purposes
-        </div>
-      )}
-      
-      {/* Card Selection */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white mb-2">Select a Card</h3>
-        <div className="grid grid-cols-2 gap-2">
-          {playerZones.map(zone => (
-            <div key={zone.id} className="bg-gray-700 p-2 rounded">
-              <h4 className="text-white font-medium">{zone.type}</h4>
-              <ul className="mt-2">
-                {zone.cards.map(card => {
-                  // Handle both string IDs and card objects
-                  const cardId = typeof card === 'string' ? card : (card as unknown as CardState).id;
-                  const cardName = useMockData && typeof card === 'string' ? 
-                    (mockCards[card]?.name || card) : 
-                    (typeof card === 'string' ? card : (card as unknown as CardState).name);
-                  
-                  return (
-                    <li 
-                      key={cardId}
-                      className={`cursor-pointer p-1 rounded ${selectedCard === cardId ? 'bg-blue-600' : 'bg-gray-600'}`}
-                      onClick={() => handleCardSelect(cardId, zone.id)}
-                    >
-                      {cardName}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Card Details */}
-      {cardDetails && (
-        <div className="mb-4 bg-gray-700 p-3 rounded">
-          <h3 className="text-lg font-semibold text-white mb-2">Selected Card</h3>
-          <p className="text-white">ID: {cardDetails.id}</p>
-          <p className="text-white">Name: {cardDetails.name}</p>
-          <p className="text-white">Zone: {cardDetails.currentZone}</p>
-          <p className="text-white">Tapped: {cardDetails.isTapped ? 'Yes' : 'No'}</p>
-          <p className="text-white">Types: {cardDetails.types.join(', ')}</p>
-          {Object.keys(cardDetails.counters).length > 0 && (
-            <div className="mt-2">
-              <p className="text-white font-medium">Counters:</p>
-              <ul className="pl-4">
-                {Object.entries(cardDetails.counters).map(([type, count]) => (
-                  <li key={type} className="text-white">
-                    {type}: {count}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-      
-      {/* Action Controls */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-white mb-2">Actions</h3>
+    <Grid>
+      <Column lg={16} md={8} sm={4}>
+        {useMockData && (
+          <Tag type="blue" className="mb-4">Using mock data for demonstration</Tag>
+        )}
         
-        {/* Move Card Action */}
-        <div className="mb-3 bg-gray-700 p-3 rounded">
-          <h4 className="text-white font-medium mb-2">Move Card</h4>
-          <div className="flex flex-col space-y-2">
-            <select 
-              className="bg-gray-600 text-white p-2 rounded"
+        {/* Card Selection */}
+        <Tile className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Select a Card</h3>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeader>Zone</TableHeader>
+                <TableHeader>Cards</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {playerZones.map(zone => (
+                <TableRow key={zone.id}>
+                  <TableCell>{zone.type}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-2">
+                      {zone.cards.map(card => {
+                        const cardId = typeof card === 'string' ? card : (card as CardState).id;
+                        const cardName = useMockData && typeof card === 'string' ? 
+                          (mockCards[card]?.name || card) : 
+                          (typeof card === 'string' ? card : (card as CardState).name);
+                        
+                        return (
+                          <Button
+                            key={cardId}
+                            kind={selectedCard === cardId ? 'primary' : 'ghost'}
+                            size="sm"
+                            onClick={() => handleCardSelect(cardId, zone.id)}
+                          >
+                            {cardName}
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Tile>
+        
+        {/* Card Details */}
+        {cardDetails && (
+          <Tile className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Selected Card</h3>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>{cardDetails.id}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>{cardDetails.name}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Zone</TableCell>
+                  <TableCell>{cardDetails.currentZone}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Status</TableCell>
+                  <TableCell>
+                    <Tag type={cardDetails.isTapped ? 'magenta' : 'green'}>
+                      {cardDetails.isTapped ? 'Tapped' : 'Untapped'}
+                    </Tag>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Types</TableCell>
+                  <TableCell>
+                    {cardDetails.types.map(type => (
+                      <Tag key={type} type="blue" className="mr-1">
+                        {type}
+                      </Tag>
+                    ))}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Tile>
+        )}
+        
+        {/* Action Controls */}
+        <Tile className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Actions</h3>
+          
+          {/* Move Card Action */}
+          <div className="mb-4">
+            <h4 className="font-medium mb-2">Move Card</h4>
+            <Select 
+              id="target-zone"
+              labelText="Target Zone"
               value={targetZone}
               onChange={(e) => setTargetZone(e.target.value)}
             >
-              <option value="">Select Target Zone</option>
+              <SelectItem value="" text="Select Target Zone" />
               {playerZones.map(zone => (
-                <option key={zone.id} value={zone.id}>
-                  {zone.type} ({zone.id})
-                </option>
+                <SelectItem 
+                  key={zone.id} 
+                  value={zone.id} 
+                  text={`${zone.type} (${zone.id})`} 
+                />
               ))}
-            </select>
-            <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            </Select>
+            <Button 
+              className="mt-2"
               onClick={handleMoveCard}
               disabled={!selectedCard || !sourceZone || !targetZone}
+              kind="primary"
             >
               Move Card
-            </button>
+            </Button>
           </div>
-        </div>
+          
+          {/* Tap Card Action */}
+          <div>
+            <h4 className="font-medium mb-2">Tap/Untap</h4>
+            <Button 
+              onClick={handleTapCard}
+              disabled={!selectedCard}
+              kind="secondary"
+            >
+              {cardDetails?.isTapped ? 'Untap' : 'Tap'} Card
+            </Button>
+          </div>
+        </Tile>
         
-        {/* Tap Card Action */}
-        <div className="bg-gray-700 p-3 rounded">
-          <h4 className="text-white font-medium mb-2">Tap Card</h4>
-          <button 
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleTapCard}
-            disabled={!selectedCard}
-          >
-            {cardDetails?.isTapped ? 'Untap' : 'Tap'} Card
-          </button>
-        </div>
-      </div>
-      
-      {/* Action Result */}
-      {actionResult && (
-        <div className="bg-gray-700 p-3 rounded">
-          <h3 className="text-lg font-semibold text-white mb-2">Result</h3>
-          <p className="text-white">{actionResult}</p>
-        </div>
-      )}
-    </div>
+        {/* Action Result */}
+        {actionResult && (
+          <Tile>
+            <h3 className="text-lg font-semibold mb-2">Result</h3>
+            {actionResult.includes('Successfully') ? (
+              <InlineLoading 
+                status="finished" 
+                description={actionResult} 
+              />
+            ) : (
+              <InlineLoading 
+                status="error" 
+                description={actionResult} 
+              />
+            )}
+          </Tile>
+        )}
+      </Column>
+    </Grid>
   );
 };
 
-export default ActionPanel; 
+export default ActionPanel;

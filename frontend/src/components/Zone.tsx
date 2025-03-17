@@ -1,6 +1,12 @@
 import React from 'react';
 import { ZoneProps, CardType } from '../types/game';
 import Card from './Card';
+import {
+  Tile,
+  Tag,
+  OverflowMenu,
+  OverflowMenuItem
+} from '@carbon/react';
 
 const Zone: React.FC<ZoneProps> = ({ 
   name, 
@@ -21,16 +27,23 @@ const Zone: React.FC<ZoneProps> = ({
   const zoneClasses = [
     'zone',
     `zone-${name}`
-  ].join(' ');
+  ].filter(Boolean).join(' ');
 
   return (
-    <div 
+    <Tile 
       className={zoneClasses}
       data-testid={`${name}-${playerId}`}
     >
       <div className="zone-header">
-        <h3>{displayName}</h3>
-        <span className="card-count">{cards.length}</span>
+        <div className="flex items-center">
+          <h3>{displayName}</h3>
+          <Tag type="gray" className="ml-2">{cards.length}</Tag>
+        </div>
+        <OverflowMenu flipped>
+          <OverflowMenuItem itemText="View All" />
+          <OverflowMenuItem itemText="Sort" />
+          <OverflowMenuItem itemText="Filter" />
+        </OverflowMenu>
       </div>
       <div className="zone-content">
         {cards.map(card => (
@@ -45,8 +58,8 @@ const Zone: React.FC<ZoneProps> = ({
           <div className="zone-empty">Empty</div>
         )}
       </div>
-    </div>
+    </Tile>
   );
 };
 
-export default Zone; 
+export default Zone;

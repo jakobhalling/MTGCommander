@@ -1,12 +1,23 @@
 import React from 'react';
-import { CardProps } from '../types/game';
+import { CardType } from '../types/game';
+import {
+  AspectRatio,
+  Tile,
+  Tag
+} from '@carbon/react';
+
+interface CardProps {
+  card: CardType;
+  isTapped?: boolean;
+  isSelected?: boolean;
+  onClick?: (card: CardType) => void;
+}
 
 const Card: React.FC<CardProps> = ({ 
   card, 
   isTapped = false, 
   isSelected = false,
-  onClick,
-  onContextMenu
+  onClick 
 }) => {
   const handleClick = () => {
     if (onClick) {
@@ -14,50 +25,60 @@ const Card: React.FC<CardProps> = ({
     }
   };
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (onContextMenu) {
-      onContextMenu(card, e);
-    }
-  };
-
   const cardClasses = [
     'card',
     isTapped ? 'tapped' : '',
-    isSelected ? 'selected' : '',
-    card.type ? `card-type-${card.type.toLowerCase().replace(/\s+/g, '-')}` : 'card-type-unknown'
+    isSelected ? 'selected' : ''
   ].filter(Boolean).join(' ');
 
   return (
-    <div 
+    <Tile 
       className={cardClasses}
-      data-testid={`card-${card.id}`}
       onClick={handleClick}
-      onContextMenu={handleContextMenu}
+      interactive
+      light
     >
-      {card.imageUrl ? (
-        <div className="card-with-image">
+      <AspectRatio ratio="2x3">
+        {card.imageUrl ? (
           <img 
             src={card.imageUrl} 
-            alt={card.name} 
+            alt={card.name}
             className="card-image"
           />
-          <div className="card-name-overlay">{card.name}</div>
-        </div>
-      ) : (
-        <div className="card-fallback">
-          <div className="card-name">{card.name}</div>
-          <div className="card-type">{card.type || 'Unknown'}</div>
-          {card.manaCost && <div className="card-mana-cost">{card.manaCost}</div>}
-          {card.text && <div className="card-text">{card.text}</div>}
-          {(card.power && card.toughness) && (
-            <div className="card-pt">{card.power}/{card.toughness}</div>
-          )}
-          {card.loyalty && <div className="card-loyalty">{card.loyalty}</div>}
-        </div>
+        ) : (
+          <div className="card-placeholder">
+            <h4>{card.name}</h4>
+            {card.manaCost && (
+              <Tag type="blue">{card.manaCost}</Tag>
+            )}
+            {card.type && (
+              <Tag type="gray">{card.type}</Tag>
+            )}
+            {card.power && card.toughness && (
+              <Tag type="magenta">{card.power}/{card.toughness}</Tag>
+            )}
+          </div>
+        )}
+      </AspectRatio>
+
+      {/* Status Indicators */}
+      {isTapped && (
+        <Tag type="magenta" className="card-status">
+          Tapped
+        </Tag>
       )}
-    </div>
+      {isSelected && (
+        <Tag type="purple" className="card-status">
+          Selected
+        </Tag>
+      )}
+      {card.counters && Object.entries(card.counters).map(([type, count]) => (
+        <Tag key={type} type="cyan" className="card-counter">
+          {type}: {count}
+        </Tag>
+      ))}
+    </Tile>
   );
 };
 
-export default Card; 
+export default Card;
