@@ -1,6 +1,6 @@
 # MTG Commander
 
-A digital implementation of the Magic: The Gathering Commander format, built with React, TypeScript, and Redux.
+A digital implementation of the Magic: The Gathering Commander format, built with React, TypeScript, and .NET 8.0.
 
 ## Documentation
 
@@ -15,68 +15,86 @@ A digital implementation of the Magic: The Gathering Commander format, built wit
 
 - Node.js (v16+)
 - npm or yarn
+- .NET SDK 8.0
 - Git
 
-### Installation
+### Frontend Setup
 
-1. Clone the repository:
+1. Navigate to the frontend directory:
    ```bash
-   git clone https://github.com/yourusername/MTGCommander.git
-   cd MTGCommander
+   cd frontend
    ```
 
 2. Install dependencies:
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
 3. Start the development server:
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
+
+The frontend will be available at `http://localhost:5173`
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Restore .NET dependencies:
+   ```bash
+   dotnet restore
+   ```
+
+3. Run the API:
+   ```bash
+   cd MTGCommander.API
+   dotnet run
+   ```
+
+The API will be available at `http://localhost:5000`
 
 ## Building for Production
 
-To create a production build:
+### Frontend Build
 
 ```bash
+cd frontend
 npm run build
-# or
-yarn build
 ```
 
-The build artifacts will be stored in the `dist/` directory.
+The frontend build artifacts will be stored in the `frontend/dist/` directory.
+
+### Backend Build
+
+```bash
+cd backend
+dotnet build --configuration Release
+```
+
+The backend build artifacts will be stored in the `backend/MTGCommander.API/bin/Release/` directory.
 
 ## Testing
 
-### Running Tests
+### Frontend Tests
 
-Run all tests:
+In the frontend directory:
 
 ```bash
-npm test
-# or
-yarn test
+npm test          # Run tests
+npm test:watch    # Run tests in watch mode
+npm test:coverage # Run tests with coverage
 ```
 
-Run tests with coverage:
+### Backend Tests
+
+In the backend directory:
 
 ```bash
-npm test -- --coverage
-# or
-yarn test --coverage
-```
-
-Run specific tests:
-
-```bash
-npm test -- -t "StorageService"
-# or
-yarn test -t "StorageService"
+dotnet test
 ```
 
 ### Test Structure
@@ -121,19 +139,48 @@ For Redux state issues:
 
 ```
 MTGCommander/
-├── src/
-│   ├── components/       # UI components
-│   ├── hooks/            # Custom React hooks
-│   ├── services/         # Service layer (API, storage)
-│   ├── store/            # Redux store configuration
-│   │   ├── game/         # Game state management
-│   │   └── cards/        # Card data management
-│   ├── types/            # TypeScript type definitions
-│   ├── utils/            # Utility functions
-│   └── __tests__/        # Test files
-├── public/               # Static assets
-└── docs/                 # Documentation
+├── frontend/
+│   ├── src/
+│   │   ├── components/       # UI components
+│   │   ├── services/        # Service layer
+│   │   ├── store/          # Redux store
+│   │   ├── types/          # TypeScript types
+│   │   └── __tests__/      # Frontend tests
+│   └── public/             # Static assets
+├── backend/
+│   ├── MTGCommander.API/    # Web API
+│   ├── MTGCommander.Core/   # Business logic
+│   ├── MTGCommander.Infrastructure/ # External services
+│   └── MTGCommander.Tests/  # Backend tests
+└── docs/                    # Documentation
 ```
+
+## Development Tools
+
+### Frontend Development
+
+- Vite Dev Server with HMR
+- Redux DevTools
+- React DevTools
+- TypeScript support
+
+### Backend Development
+
+- Swagger UI at `/swagger`
+- .NET Hot Reload
+- Serilog for logging
+
+## Environment Configuration
+
+Create `.env` files in both frontend and backend:
+
+### Frontend (.env)
+```
+VITE_API_URL=http://localhost:5000/api
+```
+
+### Backend (appsettings.Development.json)
+The default development settings are included in the repository.
 
 ## License
 
@@ -181,4 +228,4 @@ In local development mode (`NODE_ENV=development` or `LOCAL_DEV=true`):
 
 When `SKIP_FRONTEND_BUILD=true`:
 - Skips the frontend build step entirely
-- Still runs linting and tests 
+- Still runs linting and tests

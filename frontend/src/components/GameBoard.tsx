@@ -56,7 +56,7 @@ const GameBoard: React.FC<GameBoardProps> = () => {
   }
 
   return (
-    <Grid fullWidth>
+    <Grid fullWidth data-testid="game-board">
       {/* Game Status Bar */}
       <Column lg={16} md={8} sm={4}>
         <InlineNotification
