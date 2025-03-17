@@ -63,11 +63,6 @@
 - Document state shape and updates
 - Test state transitions thoroughly
 
-## Chakra UI Guidelines
-- base components on chakra ui elements like buttons, container, box, field, icon, image etc.
-- see components at https://chakra-ui.com/docs/components/concepts/overview
-
-
 ## Code Quality Standards
 
 ### Naming Conventions
