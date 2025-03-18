@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import meta from 'vite-meta';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Get API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const base_url = API_URL;
 
 // Types
@@ -100,7 +100,7 @@ export const deleteDeck = createAsyncThunk(
   'decks/deleteDeck',
   async (id: number, { rejectWithValue }) => {
     try {
-      await axios.delete(`/api/decks/${id}`);
+      await axios.delete(`${base_url}/decks/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(`Failed to delete deck with id ${id}`);
@@ -112,7 +112,7 @@ export const importDeck = createAsyncThunk(
   'decks/importDeck',
   async ({ name, deckText }: { name: string; deckText: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(base_url + '/api/decks/import', { name, deckText });
+      const response = await axios.post(`${base_url}/decks/import`, { name, deckText });
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to import deck');
@@ -136,9 +136,9 @@ export const addCardToDeck = createAsyncThunk(
   'decks/addCardToDeck',
   async ({ deckId, cardName, set }: { deckId: number; cardName: string; set?: string }, { rejectWithValue }) => {
     try {
-      await axios.post(base_url + `/decks/${deckId}/cards`, { cardName, set });
+      await axios.post(`${base_url}/decks/${deckId}/cards`, { cardName, set });
       // Refetch the deck to get the updated card list
-      const response = await axios.get(`/api/decks/${deckId}`);
+      const response = await axios.get(`${base_url}/decks/${deckId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to add card to deck with id ${deckId}`);
@@ -150,9 +150,9 @@ export const removeCardFromDeck = createAsyncThunk(
   'decks/removeCardFromDeck',
   async ({ deckId, cardId }: { deckId: number; cardId: number }, { rejectWithValue }) => {
     try {
-      await axios.delete(base_url + `/decks/${deckId}/cards/${cardId}`);
+      await axios.delete(`${base_url}/decks/${deckId}/cards/${cardId}`);
       // Refetch the deck to get the updated card list
-      const response = await axios.get(`/api/decks/${deckId}`);
+      const response = await axios.get(`${base_url}/decks/${deckId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to remove card from deck with id ${deckId}`);
