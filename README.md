@@ -8,6 +8,9 @@ A digital implementation of the Magic: The Gathering Commander format, built wit
 - [Contributing Guidelines](./docs/CONTRIBUTING.md)
 - [Architecture Overview](./docs/ARCHITECTURE.md)
 - [API Documentation](./docs/API.md)
+- [Design Principles](./docs/DESIGN.md)
+- [Development Principles](./docs/DEVELOPMENT_PRINCIPLES.md)
+- [Game Phases](./docs/PHASES.md)
 
 ## Getting Started
 
@@ -137,23 +140,133 @@ For Redux state issues:
 
 ## Project Structure
 
+The MTGCommander project follows a clean architecture pattern with clear separation of concerns between frontend and backend components.
+
+### Root Directory Structure
+
 ```
 MTGCommander/
-├── frontend/
-│   ├── src/
-│   │   ├── components/       # UI components
-│   │   ├── services/        # Service layer
-│   │   ├── store/          # Redux store
-│   │   ├── types/          # TypeScript types
-│   │   └── __tests__/      # Frontend tests
-│   └── public/             # Static assets
-├── backend/
-│   ├── MTGCommander.API/    # Web API
-│   ├── MTGCommander.Core/   # Business logic
-│   ├── MTGCommander.Infrastructure/ # External services
-│   └── MTGCommander.Tests/  # Backend tests
-└── docs/                    # Documentation
+├── .github/            # GitHub workflows and CI/CD configuration
+├── backend/            # .NET 8.0 backend application
+├── docs/               # Project documentation
+├── frontend/           # React/TypeScript frontend application
+├── .env.example        # Example environment variables
+├── .gitignore          # Git ignore configuration
+├── README.md           # Project overview and setup instructions
+├── gai-instructions.txt # Instructions for AI assistance
+└── test.sh             # Testing script
 ```
+
+### Backend Structure
+
+The backend follows a clean architecture pattern with four main projects:
+
+```
+backend/
+├── MTGCommander.API/              # Web API layer
+│   ├── Configuration/             # API configuration and DI setup
+│   ├── Controllers/               # API endpoints (CardsController, DecksController, etc.)
+│   └── Properties/                # API project properties
+│
+├── MTGCommander.Core/             # Business logic and domain models
+│   ├── DTOs/                      # Data Transfer Objects
+│   ├── Entities/                  # Domain entities
+│   ├── Interfaces/                # Service and repository interfaces
+│   └── Services/                  # Business logic implementation
+│
+├── MTGCommander.Infrastructure/   # External services and data access
+│   ├── External/                  # External API integrations
+│   ├── Repositories/              # Data access implementations
+│   └── Services/                  # Infrastructure service implementations
+│
+└── MTGCommander.Tests/            # Test projects
+    ├── API/                       # API layer tests
+    ├── Core/                      # Core layer tests
+    │   ├── DTOs/                  # DTO tests
+    │   └── Entities/              # Entity tests
+    └── Infrastructure/            # Infrastructure layer tests
+```
+
+### Frontend Structure
+
+The frontend is built with React, TypeScript, and Redux, following a feature-based organization:
+
+```
+frontend/
+├── public/                        # Static assets and index.html
+└── src/                           # Source code
+    ├── actions/                   # Redux actions
+    ├── api/                       # API client and request handling
+    ├── components/                # Reusable UI components
+    │   ├── DeckManagement/        # Deck management components
+    │   └── Home/                  # Home page components
+    ├── hooks/                     # Custom React hooks
+    ├── middleware/                # Redux middleware
+    ├── routes/                    # Route components
+    │   ├── Home/                  # Home route
+    │   ├── Multiplayer/           # Multiplayer game route
+    │   └── Singleplayer/          # Singleplayer game route
+    ├── services/                  # Service layer
+    │   └── storage/               # Storage services
+    ├── store/                     # Redux store configuration
+    │   ├── game/                  # Game-related state
+    │   └── slices/                # Redux Toolkit slices
+    ├── types/                     # TypeScript type definitions
+    │   ├── card/                  # Card-related types
+    │   └── game/                  # Game-related types
+    └── __tests__/                 # Test files
+        ├── actions/               # Action tests
+        ├── components/            # Component tests
+        ├── middleware/            # Middleware tests
+        ├── services/              # Service tests
+        ├── store/                 # Store tests
+        │   └── game/              # Game state tests
+        └── types/                 # Type tests
+            └── game/              # Game type tests
+```
+
+### Documentation Structure
+
+The project includes comprehensive documentation in the docs directory:
+
+```
+docs/
+├── API.md                        # API documentation
+├── ARCHITECTURE.md               # Architecture overview
+├── CONTRIBUTING.md               # Contributing guidelines
+├── DECK_MANAGEMENT_TODO.md       # Deck management feature roadmap
+├── DESIGN.md                     # Design principles and UI/UX guidelines
+├── DEVELOPMENT_PRINCIPLES.md     # Development principles and best practices
+├── GAI_DEVELOPMENT_PRINCIPLES.md # AI-assisted development guidelines
+├── IMPLEMENTATION_SUMMARY.md     # Implementation details summary
+├── PHASES.md                     # Game phases documentation
+├── TODO.md                       # Project roadmap and todo items
+└── VERIFICATION.md               # Verification process documentation
+```
+
+### Key Files and Their Purposes
+
+#### Backend Key Files
+
+- `MTGCommander.API/Program.cs`: Entry point for the API application
+- `MTGCommander.API/Configuration/ServiceCollectionExtensions.cs`: DI configuration
+- `MTGCommander.API/Controllers/*.cs`: API endpoints for different resources
+- `MTGCommander.Core/DTOs/*.cs`: Data transfer objects for API communication
+- `MTGCommander.Core/Entities/*.cs`: Domain entities representing game objects
+- `MTGCommander.Core/Interfaces/*.cs`: Interfaces defining service contracts
+- `MTGCommander.Core/Services/*.cs`: Business logic implementation
+- `MTGCommander.Infrastructure/Repositories/*.cs`: Data access implementations
+- `MTGCommander.Infrastructure/External/*.cs`: External API integrations
+
+#### Frontend Key Files
+
+- `frontend/src/App.tsx`: Main application component
+- `frontend/src/components/*.tsx`: Reusable UI components
+- `frontend/src/store/index.ts`: Redux store configuration
+- `frontend/src/store/slices/*.ts`: Redux Toolkit slices for state management
+- `frontend/src/services/*.ts`: Service layer implementations
+- `frontend/src/types/*.ts`: TypeScript type definitions
+- `frontend/src/routes/*.tsx`: Route components for different pages
 
 ## Development Tools
 
@@ -228,4 +341,3 @@ In local development mode (`NODE_ENV=development` or `LOCAL_DEV=true`):
 
 When `SKIP_FRONTEND_BUILD=true`:
 - Skips the frontend build step entirely
-- Still runs linting and tests
