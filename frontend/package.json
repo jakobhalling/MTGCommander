@@ -12,6 +12,7 @@
     "@types/react-redux": "^7.1.34",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.8.3",
+    "dotenv": "^16.4.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.2.0",
@@ -42,7 +43,6 @@
     "preview": "vite preview",
     "test": "react-scripts test --silent --watchAll=false",
     "test:ci": "CI=true react-scripts test"
-
   },
   "eslintConfig": {
     "extends": [

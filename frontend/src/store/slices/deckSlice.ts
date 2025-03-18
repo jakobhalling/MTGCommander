@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import meta from 'vite-meta';
+
+const API_URL = import.meta.env.VITE_API_URL;
+const base_url = API_URL;
 
 // Types
 export interface Card {
@@ -48,7 +52,7 @@ export const fetchDecks = createAsyncThunk(
   'decks/fetchDecks',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/decks');
+      const response = await axios.get(base_url + '/decks');
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch decks');
@@ -60,7 +64,7 @@ export const fetchDeckById = createAsyncThunk(
   'decks/fetchDeckById',
   async (id: number, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/api/decks/${id}`);
+      const response = await axios.get(base_url + `/decks/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to fetch deck with id ${id}`);
@@ -72,7 +76,7 @@ export const createDeck = createAsyncThunk(
   'decks/createDeck',
   async (name: string, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/decks', { name });
+      const response = await axios.post(base_url + '/decks', { name });
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to create deck');
@@ -84,7 +88,7 @@ export const updateDeck = createAsyncThunk(
   'decks/updateDeck',
   async ({ id, name }: { id: number; name: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/api/decks/${id}`, { name });
+      const response = await axios.put(base_url + `/decks/${id}`, { name });
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to update deck with id ${id}`);
@@ -108,7 +112,7 @@ export const importDeck = createAsyncThunk(
   'decks/importDeck',
   async ({ name, deckText }: { name: string; deckText: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/decks/import', { name, deckText });
+      const response = await axios.post(base_url + '/api/decks/import', { name, deckText });
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to import deck');
@@ -120,7 +124,7 @@ export const setCommander = createAsyncThunk(
   'decks/setCommander',
   async ({ deckId, cardId }: { deckId: number; cardId: number }, { rejectWithValue }) => {
     try {
-      await axios.put(`/api/decks/${deckId}/commander`, { cardId });
+      await axios.put(base_url + `/decks/${deckId}/commander`, { cardId });
       return { deckId, cardId };
     } catch (error) {
       return rejectWithValue(`Failed to set commander for deck with id ${deckId}`);
@@ -132,7 +136,7 @@ export const addCardToDeck = createAsyncThunk(
   'decks/addCardToDeck',
   async ({ deckId, cardName, set }: { deckId: number; cardName: string; set?: string }, { rejectWithValue }) => {
     try {
-      await axios.post(`/api/decks/${deckId}/cards`, { cardName, set });
+      await axios.post(base_url + `/decks/${deckId}/cards`, { cardName, set });
       // Refetch the deck to get the updated card list
       const response = await axios.get(`/api/decks/${deckId}`);
       return response.data;
@@ -146,7 +150,7 @@ export const removeCardFromDeck = createAsyncThunk(
   'decks/removeCardFromDeck',
   async ({ deckId, cardId }: { deckId: number; cardId: number }, { rejectWithValue }) => {
     try {
-      await axios.delete(`/api/decks/${deckId}/cards/${cardId}`);
+      await axios.delete(base_url + `/decks/${deckId}/cards/${cardId}`);
       // Refetch the deck to get the updated card list
       const response = await axios.get(`/api/decks/${deckId}`);
       return response.data;

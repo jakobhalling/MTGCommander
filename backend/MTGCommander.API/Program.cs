@@ -1,9 +1,24 @@
 using MTGCommander.API.Configuration;
 using Serilog;
 
+
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    if (builder.Environment.IsDevelopment())
+    {
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("MyCorsPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+    }
 
     // Configure Serilog
     builder.Host.UseSerilog();
@@ -24,10 +39,16 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
 
-    // Add CORS middleware before Authorization
-    app.UseCors("AllowedOrigins");
+    if(app.Environment.IsDevelopment())
+    {
+        app.UseCors("MyCorsPolicy");
+    }
+    else
+    {
+        app.UseCors("AllowedOrigins");
+    }
 
     app.UseAuthorization();
 

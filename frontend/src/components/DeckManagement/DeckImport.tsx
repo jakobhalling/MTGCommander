@@ -20,8 +20,8 @@ const DeckImport: React.FC = () => {
   
   const [deckName, setDeckName] = useState('');
   const [deckText, setDeckText] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+    
   const handleImport = async () => {
     if (!deckName.trim() || !deckText.trim()) {
       return;
