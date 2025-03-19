@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Button,
   Tile,
@@ -11,70 +11,45 @@ import {
   ModalBody,
   Dropdown
 } from '@carbon/react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { 
-  fetchDeckById, 
-  updateDeck, 
-  removeCardFromDeck, 
-  setCommander,
-  Card
-} from '../../store/slices/deckSlice';
+import { Card } from '../../store/slices/deckSlice';
 
-const DeckDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const deckId = parseInt(id || '0');
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { currentDeck, loading, error } = useAppSelector(state => state.decks);
-  
-  const [isEditNameModalOpen, setIsEditNameModalOpen] = useState(false);
-  const [newDeckName, setNewDeckName] = useState('');
-  const [isSetCommanderModalOpen, setIsSetCommanderModalOpen] = useState(false);
-  const [selectedCommanderId, setSelectedCommanderId] = useState<number | null>(null);
+interface DeckDetailProps {
+  deck: any;
+  loading: boolean;
+  error: string | null;
+  onEditName: () => void;
+  onSaveName: () => void;
+  onRemoveCard: (cardId: number) => void;
+  onSetCommander: () => void;
+  onBackToDeckList: () => void;
+  isEditNameModalOpen: boolean;
+  isSetCommanderModalOpen: boolean;
+  newDeckName: string;
+  selectedCommanderId: number | null;
+  onCloseEditNameModal: () => void;
+  onCloseSetCommanderModal: () => void;
+  onNewDeckNameChange: (name: string) => void;
+  onSelectedCommanderChange: (commanderId: number | null) => void;
+}
 
-  useEffect(() => {
-    if (deckId) {
-      dispatch(fetchDeckById(deckId));
-    }
-  }, [dispatch, deckId]);
-
-  useEffect(() => {
-    if (currentDeck) {
-      setNewDeckName(currentDeck.name);
-    }
-  }, [currentDeck]);
-
-  const handleEditName = () => {
-    setIsEditNameModalOpen(true);
-  };
-
-  const handleSaveName = async () => {
-    if (newDeckName.trim() && currentDeck) {
-      await dispatch(updateDeck({ id: currentDeck.id, name: newDeckName }));
-      setIsEditNameModalOpen(false);
-    }
-  };
-
-  const handleRemoveCard = async (cardId: number) => {
-    if (confirm('Are you sure you want to remove this card from the deck?')) {
-      await dispatch(removeCardFromDeck({ deckId, cardId }));
-    }
-  };
-
-  const openSetCommanderModal = () => {
-    setSelectedCommanderId(currentDeck?.commanderId || null);
-    setIsSetCommanderModalOpen(true);
-  };
-
-  const handleSetCommander = async () => {
-    if (selectedCommanderId !== null && currentDeck) {
-      await dispatch(setCommander({ deckId: currentDeck.id, cardId: selectedCommanderId }));
-      await dispatch(fetchDeckById(deckId)); // Refresh deck data
-      setIsSetCommanderModalOpen(false);
-    }
-  };
-
+const DeckDetail: React.FC<DeckDetailProps> = ({
+  deck,
+  loading,
+  error,
+  onEditName,
+  onSaveName,
+  onRemoveCard,
+  onSetCommander,
+  onBackToDeckList,
+  isEditNameModalOpen,
+  isSetCommanderModalOpen,
+  newDeckName,
+  selectedCommanderId,
+  onCloseEditNameModal,
+  onCloseSetCommanderModal,
+  onNewDeckNameChange,
+  onSelectedCommanderChange
+}) => {
   // Group cards by type
   const groupCardsByType = (cards: Card[]) => {
     const groups: Record<string, Card[]> = {};
@@ -101,53 +76,53 @@ const DeckDetail: React.FC = () => {
     return <div className="error-message">{error}</div>;
   }
 
-  if (!currentDeck) {
+  if (!deck) {
     return <div>Deck not found</div>;
   }
 
   // Add safety check for cards array
-  const cards = Array.isArray(currentDeck.cards) ? currentDeck.cards : [];
+  const cards = Array.isArray(deck.cards) ? deck.cards : [];
   const cardGroups = groupCardsByType(cards);
 
   return (
     <div className="deck-detail">
       <div className="deck-header">
-        <h2>{currentDeck.name}</h2>
+        <h2>{deck.name}</h2>
         <div className="deck-actions">
-          <Button onClick={handleEditName}>Edit Name</Button>
-          <Button onClick={openSetCommanderModal}>Set Commander</Button>
-          <Button onClick={() => navigate('/decks')}>Back to Decks</Button>
+          <Button onClick={onEditName}>Edit Name</Button>
+          <Button onClick={() => onSetCommander()}>Set Commander</Button>
+          <Button onClick={onBackToDeckList}>Back to Decks</Button>
         </div>
       </div>
 
       <div className="deck-info">
         <p>
-          <strong>Commander:</strong> {currentDeck.commander?.name || 'No Commander Set'}
+          <strong>Commander:</strong> {deck.commander?.name || 'No Commander Set'}
         </p>
         <p>
           <strong>Cards:</strong> {cards.length}
         </p>
         <p>
-          <strong>Created:</strong> {new Date(currentDeck.createdAt).toLocaleDateString()}
+          <strong>Created:</strong> {new Date(deck.createdAt).toLocaleDateString()}
         </p>
       </div>
 
       <div className="commander-section">
-        {currentDeck.commander && (
+        {deck.commander && (
           <Tile className="commander-tile">
             <h3>Commander</h3>
             <div className="card-display">
-              {currentDeck.commander.imageUrl ? (
+              {deck.commander.imageUrl ? (
                 <img 
-                  src={currentDeck.commander.imageUrl} 
-                  alt={currentDeck.commander.name} 
+                  src={deck.commander.imageUrl} 
+                  alt={deck.commander.name} 
                   className="card-image"
                 />
               ) : (
                 <div className="card-placeholder">
-                  <h4>{currentDeck.commander.name}</h4>
-                  <p>{currentDeck.commander.type}</p>
-                  <p>{currentDeck.commander.text}</p>
+                  <h4>{deck.commander.name}</h4>
+                  <p>{deck.commander.type}</p>
+                  <p>{deck.commander.text}</p>
                 </div>
               )}
             </div>
@@ -166,14 +141,14 @@ const DeckDetail: React.FC = () => {
                   <div className="card-item" key={card.id}>
                     <div className="card-name">
                       {card.name}
-                      {card.id === currentDeck.commanderId && (
+                      {card.id === deck.commanderId && (
                         <Tag type="blue">Commander</Tag>
                       )}
                     </div>
                     <Button 
                       kind="danger--ghost" 
                       size="sm" 
-                      onClick={() => handleRemoveCard(card.id)}
+                      onClick={() => onRemoveCard(card.id)}
                     >
                       Remove
                     </Button>
@@ -188,19 +163,19 @@ const DeckDetail: React.FC = () => {
       {/* Edit Name Modal */}
       <Modal
         open={isEditNameModalOpen}
-        onRequestClose={() => setIsEditNameModalOpen(false)}
+        onRequestClose={onCloseEditNameModal}
         modalHeading="Edit Deck Name"
         primaryButtonText="Save"
         secondaryButtonText="Cancel"
-        onRequestSubmit={handleSaveName}
-        onSecondarySubmit={() => setIsEditNameModalOpen(false)}
+        onRequestSubmit={onSaveName}
+        onSecondarySubmit={onCloseEditNameModal}
       >
         <ModalBody>
           <TextInput
             id="new-deck-name"
             labelText="Deck Name"
             value={newDeckName}
-            onChange={e => setNewDeckName(e.target.value)}
+            onChange={e => onNewDeckNameChange(e.target.value)}
           />
         </ModalBody>
       </Modal>
@@ -208,12 +183,12 @@ const DeckDetail: React.FC = () => {
       {/* Set Commander Modal */}
       <Modal
         open={isSetCommanderModalOpen}
-        onRequestClose={() => setIsSetCommanderModalOpen(false)}
+        onRequestClose={onCloseSetCommanderModal}
         modalHeading="Set Commander"
         primaryButtonText="Set Commander"
         secondaryButtonText="Cancel"
-        onRequestSubmit={handleSetCommander}
-        onSecondarySubmit={() => setIsSetCommanderModalOpen(false)}
+        onRequestSubmit={onSetCommander}
+        onSecondarySubmit={onCloseSetCommanderModal}
       >
         <ModalBody>
           <Dropdown
@@ -222,7 +197,7 @@ const DeckDetail: React.FC = () => {
             label="Select a card to be your commander"
             items={cards.map(card => ({ id: card.id.toString(), text: card.name }))}
             selectedItem={selectedCommanderId ? { id: selectedCommanderId.toString() } : undefined}
-            onChange={({ selectedItem }) => setSelectedCommanderId(selectedItem ? parseInt(selectedItem.id) : null)}
+            onChange={({ selectedItem }) => onSelectedCommanderChange(selectedItem ? parseInt(selectedItem.id) : null)}
           />
         </ModalBody>
       </Modal>

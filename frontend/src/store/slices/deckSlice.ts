@@ -1,10 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Get API URL from environment variables
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-const base_url = API_URL;
-
 // Types
 export interface Card {
   id: number;
@@ -18,6 +14,8 @@ export interface Card {
   toughness?: string;
   loyalty?: string;
   isCommander: boolean;
+  set?: string;
+  quantity?: number;
 }
 
 export interface Deck {
@@ -52,7 +50,9 @@ export const fetchDecks = createAsyncThunk(
   'decks/fetchDecks',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(base_url + '/decks');
+      // Use environment variable for API URL if available
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const response = await axios.get(`${apiUrl}/decks`);
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to fetch decks');
@@ -62,9 +62,9 @@ export const fetchDecks = createAsyncThunk(
 
 export const fetchDeckById = createAsyncThunk(
   'decks/fetchDeckById',
-  async (id: number, { rejectWithValue }) => {
+  async ({ id, apiUrl = 'http://localhost:5000/api' }: { id: number, apiUrl?: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(base_url + `/decks/${id}`);
+      const response = await axios.get(`${apiUrl}/decks/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to fetch deck with id ${id}`);
@@ -74,9 +74,9 @@ export const fetchDeckById = createAsyncThunk(
 
 export const createDeck = createAsyncThunk(
   'decks/createDeck',
-  async (name: string, { rejectWithValue }) => {
+  async ({ name, apiUrl = 'http://localhost:5000/api' }: { name: string, apiUrl?: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(base_url + '/decks', { name });
+      const response = await axios.post(`${apiUrl}/decks`, { name });
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to create deck');
@@ -86,9 +86,9 @@ export const createDeck = createAsyncThunk(
 
 export const updateDeck = createAsyncThunk(
   'decks/updateDeck',
-  async ({ id, name }: { id: number; name: string }, { rejectWithValue }) => {
+  async ({ id, name, apiUrl = 'http://localhost:5000/api' }: { id: number; name: string; apiUrl?: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(base_url + `/decks/${id}`, { name });
+      const response = await axios.put(`${apiUrl}/decks/${id}`, { name });
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to update deck with id ${id}`);
@@ -98,9 +98,9 @@ export const updateDeck = createAsyncThunk(
 
 export const deleteDeck = createAsyncThunk(
   'decks/deleteDeck',
-  async (id: number, { rejectWithValue }) => {
+  async ({ id, apiUrl = 'http://localhost:5000/api' }: { id: number, apiUrl?: string }, { rejectWithValue }) => {
     try {
-      await axios.delete(`${base_url}/decks/${id}`);
+      await axios.delete(`${apiUrl}/decks/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(`Failed to delete deck with id ${id}`);
@@ -110,9 +110,16 @@ export const deleteDeck = createAsyncThunk(
 
 export const importDeck = createAsyncThunk(
   'decks/importDeck',
-  async ({ name, deckText }: { name: string; deckText: string }, { rejectWithValue }) => {
+  async ({ name, deckText, apiUrl = 'http://localhost:5000/api' }: { name: string; deckText: string; apiUrl?: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${base_url}/decks/import`, { name, deckText });
+      // Parse the deck text to extract card information including quantity and set
+      const cards = parseCardList(deckText);
+      
+      const response = await axios.post(`${apiUrl}/decks/import`, { 
+        name, 
+        deckText,
+        cards // Include parsed cards with quantity and set information
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue('Failed to import deck');
@@ -122,9 +129,9 @@ export const importDeck = createAsyncThunk(
 
 export const setCommander = createAsyncThunk(
   'decks/setCommander',
-  async ({ deckId, cardId }: { deckId: number; cardId: number }, { rejectWithValue }) => {
+  async ({ deckId, cardId, apiUrl = 'http://localhost:5000/api' }: { deckId: number; cardId: number; apiUrl?: string }, { rejectWithValue }) => {
     try {
-      await axios.put(base_url + `/decks/${deckId}/commander`, { cardId });
+      await axios.put(`${apiUrl}/decks/${deckId}/commander`, { cardId });
       return { deckId, cardId };
     } catch (error) {
       return rejectWithValue(`Failed to set commander for deck with id ${deckId}`);
@@ -134,11 +141,13 @@ export const setCommander = createAsyncThunk(
 
 export const addCardToDeck = createAsyncThunk(
   'decks/addCardToDeck',
-  async ({ deckId, cardName, set }: { deckId: number; cardName: string; set?: string }, { rejectWithValue }) => {
+  async ({ deckId, cardName, set, quantity = 1, apiUrl = 'http://localhost:5000/api' }: 
+    { deckId: number; cardName: string; set?: string; quantity?: number; apiUrl?: string }, 
+    { rejectWithValue }) => {
     try {
-      await axios.post(`${base_url}/decks/${deckId}/cards`, { cardName, set });
+      await axios.post(`${apiUrl}/decks/${deckId}/cards`, { cardName, set, quantity });
       // Refetch the deck to get the updated card list
-      const response = await axios.get(`${base_url}/decks/${deckId}`);
+      const response = await axios.get(`${apiUrl}/decks/${deckId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to add card to deck with id ${deckId}`);
@@ -148,17 +157,64 @@ export const addCardToDeck = createAsyncThunk(
 
 export const removeCardFromDeck = createAsyncThunk(
   'decks/removeCardFromDeck',
-  async ({ deckId, cardId }: { deckId: number; cardId: number }, { rejectWithValue }) => {
+  async ({ deckId, cardId, apiUrl = 'http://localhost:5000/api' }: { deckId: number; cardId: number; apiUrl?: string }, { rejectWithValue }) => {
     try {
-      await axios.delete(`${base_url}/decks/${deckId}/cards/${cardId}`);
+      await axios.delete(`${apiUrl}/decks/${deckId}/cards/${cardId}`);
       // Refetch the deck to get the updated card list
-      const response = await axios.get(`${base_url}/decks/${deckId}`);
+      const response = await axios.get(`${apiUrl}/decks/${deckId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(`Failed to remove card from deck with id ${deckId}`);
     }
   }
 );
+
+// Helper function to parse card list text
+const parseCardList = (text: string): { name: string; set?: string; quantity: number }[] => {
+  if (!text.trim()) return [];
+  
+  const lines = text.trim().split('\n');
+  const parsedCards: { name: string; set?: string; quantity: number }[] = [];
+  
+  lines.forEach(line => {
+    line = line.trim();
+    if (!line) return; // Skip empty lines
+    
+    // Skip comment lines
+    if (line.startsWith('//') || line.startsWith('#')) return;
+    
+    // Match patterns:
+    // 1. "2 Lightning Bolt" - quantity and name
+    // 2. "2x Lightning Bolt" - quantity with 'x' and name
+    // 3. "2 Lightning Bolt (M10)" - quantity, name, and set
+    // 4. "Lightning Bolt" - just name (assume quantity 1)
+    
+    let match = line.match(/^(\d+)(?:x|\s+)(.+?)(?:\s+\(([^)]+)\))?$/i);
+    
+    if (!match) {
+      // Try matching just the card name without quantity
+      match = line.match(/^(.+?)(?:\s+\(([^)]+)\))?$/i);
+      
+      if (match) {
+        // If just name, assume quantity 1
+        parsedCards.push({
+          quantity: 1,
+          name: match[1].trim(),
+          set: match[2]?.trim()
+        });
+      }
+    } else {
+      // Full match with quantity
+      parsedCards.push({
+        quantity: parseInt(match[1]),
+        name: match[2].trim(),
+        set: match[3]?.trim()
+      });
+    }
+  });
+  
+  return parsedCards;
+};
 
 // Slice
 const deckSlice = createSlice({

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   DataTable,
   Table,
@@ -14,9 +14,6 @@ import {
   Tile
 } from '@carbon/react';
 import { TrashCan, Edit, Add } from '@carbon/icons-react';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { fetchDecks, deleteDeck, fetchDeckById } from '../../store/slices/deckSlice';
-import { useNavigate } from 'react-router-dom';
 
 // Mock data for decks when no backend is available
 const mockDecks = [
@@ -133,56 +130,35 @@ const mockDecks = [
   }
 ];
 
-const DeckList: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { decks, loading, error } = useAppSelector(state => state.decks);
-  const [deleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const [deckToDelete, setDeckToDelete] = React.useState<number | null>(null);
-  const [useMockData, setUseMockData] = React.useState(false);
+interface DeckListProps {
+  decks: any[];
+  loading: boolean;
+  error: string | null;
+  useMockData: boolean;
+  onViewDeck: (deckId: number) => void;
+  onEditDeck: (deckId: number) => void;
+  onDeleteDeck: (deckId: number) => void;
+  onCreateDeck: () => void;
+  onImportDeck: () => void;
+  deleteModalOpen: boolean;
+  onCloseDeleteModal: () => void;
+  onConfirmDelete: () => void;
+}
 
-  useEffect(() => {
-    // Try to fetch decks from the backend
-    dispatch(fetchDecks())
-      .unwrap()
-      .catch(() => {
-        // If fetching fails, use mock data
-        setUseMockData(true);
-      });
-  }, [dispatch]);
-
-  const handleViewDeck = (deckId: number) => {
-    if (useMockData) {
-      navigate(`/decks/${deckId}`);
-    } else {
-      dispatch(fetchDeckById(deckId));
-      navigate(`/decks/${deckId}`);
-    }
-  };
-
-  const handleEditDeck = (deckId: number) => {
-    navigate(`/decks/${deckId}/edit`);
-  };
-
-  const openDeleteModal = (deckId: number) => {
-    setDeckToDelete(deckId);
-    setDeleteModalOpen(true);
-  };
-
-  const closeDeleteModal = () => {
-    setDeleteModalOpen(false);
-    setDeckToDelete(null);
-  };
-
-  const confirmDelete = async () => {
-    if (deckToDelete !== null) {
-      if (!useMockData) {
-        await dispatch(deleteDeck(deckToDelete));
-      }
-      closeDeleteModal();
-    }
-  };
-
+const DeckList: React.FC<DeckListProps> = ({
+  decks,
+  loading,
+  error,
+  useMockData,
+  onViewDeck,
+  onEditDeck,
+  onDeleteDeck,
+  onCreateDeck,
+  onImportDeck,
+  deleteModalOpen,
+  onCloseDeleteModal,
+  onConfirmDelete
+}) => {
   const headers = [
     { key: 'name', header: 'Deck Name' },
     { key: 'commander', header: 'Commander' },
@@ -205,13 +181,13 @@ const DeckList: React.FC = () => {
     createdAt: new Date(deck.createdAt).toLocaleDateString(),
     actions: (
       <div className="deck-actions">
-        <Button kind="ghost" size="sm" onClick={() => handleViewDeck(deck.id)}>
+        <Button kind="ghost" size="sm" onClick={() => onViewDeck(deck.id)}>
           View
         </Button>
-        <Button kind="ghost" size="sm" onClick={() => handleEditDeck(deck.id)}>
+        <Button kind="ghost" size="sm" onClick={() => onEditDeck(deck.id)}>
           <Edit size={16} />
         </Button>
-        <Button kind="danger--ghost" size="sm" onClick={() => openDeleteModal(deck.id)}>
+        <Button kind="danger--ghost" size="sm" onClick={() => onDeleteDeck(deck.id)}>
           <TrashCan size={16} />
         </Button>
       </div>
@@ -222,24 +198,6 @@ const DeckList: React.FC = () => {
     return <InlineLoading description="Loading decks..." />;
   }
 
-  if (error && !useMockData) {
-    return (
-      <div className="deck-list">
-        <div className="deck-list-header">
-          <h2>My Decks</h2>
-          <div className="deck-actions-container">
-            <Button onClick={() => navigate('/decks/create')} renderIcon={Add}>Create New Deck</Button>
-            <Button onClick={() => navigate('/decks/import')} style={{ marginLeft: '1rem' }}>Import Deck</Button>
-          </div>
-        </div>
-        <Tile className="error-message">
-          <p>Could not connect to the backend server. Showing mock data instead.</p>
-        </Tile>
-        {renderDeckTable()}
-      </div>
-    );
-  }
-
   function renderDeckTable() {
     return (
       <>
@@ -247,8 +205,8 @@ const DeckList: React.FC = () => {
           <div className="no-decks">
             <p>You don't have any decks yet. Create a new deck or import one to get started.</p>
             <div className="deck-actions-container">
-              <Button onClick={() => navigate('/decks/create')} renderIcon={Add}>Create New Deck</Button>
-              <Button onClick={() => navigate('/decks/import')} style={{ marginLeft: '1rem' }}>Import Deck</Button>
+              <Button onClick={onCreateDeck} renderIcon={Add}>Create New Deck</Button>
+              <Button onClick={onImportDeck} style={{ marginLeft: '1rem' }}>Import Deck</Button>
             </div>
           </div>
         ) : (
@@ -281,13 +239,31 @@ const DeckList: React.FC = () => {
     );
   }
 
+  if (error && !useMockData) {
+    return (
+      <div className="deck-list">
+        <div className="deck-list-header">
+          <h2>My Decks</h2>
+          <div className="deck-actions-container">
+            <Button onClick={onCreateDeck} renderIcon={Add}>Create New Deck</Button>
+            <Button onClick={onImportDeck} style={{ marginLeft: '1rem' }}>Import Deck</Button>
+          </div>
+        </div>
+        <Tile className="error-message">
+          <p>Could not connect to the backend server. Showing mock data instead.</p>
+        </Tile>
+        {renderDeckTable()}
+      </div>
+    );
+  }
+
   return (
     <div className="deck-list">
       <div className="deck-list-header">
         <h2>My Decks</h2>
         <div className="deck-actions-container">
-          <Button onClick={() => navigate('/decks/create')} renderIcon={Add}>Create New Deck</Button>
-          <Button onClick={() => navigate('/decks/import')} style={{ marginLeft: '1rem' }}>Import Deck</Button>
+          <Button onClick={onCreateDeck} renderIcon={Add}>Create New Deck</Button>
+          <Button onClick={onImportDeck} style={{ marginLeft: '1rem' }}>Import Deck</Button>
         </div>
       </div>
 
@@ -301,13 +277,13 @@ const DeckList: React.FC = () => {
 
       <Modal
         open={deleteModalOpen}
-        onRequestClose={closeDeleteModal}
+        onRequestClose={onCloseDeleteModal}
         modalHeading="Delete Deck"
         danger
         primaryButtonText="Delete"
         secondaryButtonText="Cancel"
-        onRequestSubmit={confirmDelete}
-        onSecondarySubmit={closeDeleteModal}
+        onRequestSubmit={onConfirmDelete}
+        onSecondarySubmit={onCloseDeleteModal}
       >
         <ModalBody>
           <p>Are you sure you want to delete this deck? This action cannot be undone.</p>

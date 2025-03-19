@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Button,
   TextInput,
@@ -8,49 +8,33 @@ import {
   Modal,
   ModalBody
 } from '@carbon/react';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { createDeck } from '../../store/slices/deckSlice';
-import { useNavigate } from 'react-router-dom';
 
-const CreateDeck: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { loading, error } = useAppSelector(state => state.decks);
-  
-  const [deckName, setDeckName] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [createdDeckId, setCreatedDeckId] = useState<number | null>(null);
-  
-  const handleCreate = async () => {
-    if (!deckName.trim()) {
-      return;
-    }
-    
-    try {
-      const resultAction = await dispatch(createDeck(deckName));
-      if (createDeck.fulfilled.match(resultAction)) {
-        setCreatedDeckId(resultAction.payload.id);
-        setIsModalOpen(true);
-      }
-    } catch (err) {
-      console.error('Failed to create deck:', err);
-    }
-  };
-  
-  const closeModal = () => {
-    setIsModalOpen(false);
-    if (createdDeckId) {
-      navigate(`/decks/${createdDeckId}`);
-    } else {
-      navigate('/decks');
-    }
-  };
-  
+interface CreateDeckProps {
+  deckName: string;
+  setDeckName: (name: string) => void;
+  loading: boolean;
+  error: string | null;
+  isModalOpen: boolean;
+  onCreateDeck: () => void;
+  onCancel: () => void;
+  onCloseModal: () => void;
+}
+
+const CreateDeck: React.FC<CreateDeckProps> = ({
+  deckName,
+  setDeckName,
+  loading,
+  error,
+  isModalOpen,
+  onCreateDeck,
+  onCancel,
+  onCloseModal
+}) => {
   return (
     <div className="create-deck">
       <h2>Create New Deck</h2>
       
-      <Form onSubmit={e => { e.preventDefault(); handleCreate(); }}>
+      <Form onSubmit={e => { e.preventDefault(); onCreateDeck(); }}>
         <Stack gap={5}>
           <TextInput
             id="deck-name"
@@ -71,7 +55,7 @@ const CreateDeck: React.FC = () => {
                 </Button>
                 <Button 
                   kind="secondary" 
-                  onClick={() => navigate('/decks')} 
+                  onClick={onCancel} 
                   style={{ marginLeft: '1rem' }}
                 >
                   Cancel
@@ -90,10 +74,10 @@ const CreateDeck: React.FC = () => {
       
       <Modal
         open={isModalOpen}
-        onRequestClose={closeModal}
+        onRequestClose={onCloseModal}
         modalHeading="Deck Created"
         primaryButtonText="Go to Deck"
-        onRequestSubmit={closeModal}
+        onRequestSubmit={onCloseModal}
       >
         <ModalBody>
           <p>Your new deck "{deckName}" has been successfully created.</p>
